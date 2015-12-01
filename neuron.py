@@ -4,7 +4,7 @@
 import math
 import copy
 
-class NEURON(object):
+class Neuron(object):
     """Construtor da classe NEURON"""
     def __init__(self, inputs, weights):
         # Lista de entradas do neurônio
