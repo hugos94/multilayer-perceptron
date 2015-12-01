@@ -30,17 +30,23 @@ class Application(tk.Frame):
     def create_buttons(self):
         """Funcao que cria os botoes no Frame"""
 
-        # Cria o botao abrir arquivo de treinamento
-        tk.Button(self, text='Abrir Arquivo de Treinamento...', command=self.open_file(0)).grid(column = 0, row = 0)
+        # Cria o botao para abrir o arquivo de treinamento
+        tk.Button(self, text='Abrir Arquivo de Treinamento...', command=self.open_file).grid(column = 0, row = 0)
 
-        # Cria o botao para remover atributos da tabela
-        tk.Button(self, text='Abrir Arquivo de Teste...', command=self.open_file(1)).grid(column = 1, row = 0)
+        # Cria o botao para abrir o arquivo de teste
+        tk.Button(self, text='Abrir Arquivo de Teste...', command=self.open_file).grid(column = 1, row = 0)
 
-        # Cria o botao executar id3
-        tk.Button(self, text='Treinar Rede Neural...', command=self.execute).grid(column = 2, row = 0)
+        # Cria a Entry para inserir a quantidade de epocas para o treinamento
+        tk.Entry(self, bd = 5)
 
-        # Cria o botao executar id3
-        tk.Button(self, text='Testar Rede Neural...', command=self.execute).grid(column = 3, row = 0)
+        # Cria a Entry para inserir o erro aceitavel para o treinamento
+        tk.Entry(self, bd = 5)
+
+        # Cria o botao para treinar a MLP
+        tk.Button(self, text='Treinar Rede Neural...', command=self.execute).grid(column = 4, row = 0)
+
+        # Cria o botao para testar a MLP
+        tk.Button(self, text='Testar Rede Neural...', command=self.execute).grid(column = 5, row = 0)
 
 
     def open_file(self,type):
@@ -75,6 +81,7 @@ class Application(tk.Frame):
 
     def execute(self):
         """Funcao que executa o algoritmo do Multilayer Perceptron"""
+
 
 if __name__ == '__main__':
     root = tk.Tk()
