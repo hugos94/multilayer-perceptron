@@ -8,8 +8,9 @@ from matrix import *
 
 def main():
     weight = 0.5    # Pesos sinaptico inicial
-    mi = 0.2        # Potencial de ativacao
+    mi = -0.2        # Potencial de ativacao
     n = 0.5         # Taxa de aprendizagem
+    epoch = 0     # Quantidade de epocas
 
     fm = FileManager()
 
@@ -20,21 +21,30 @@ def main():
     attributes = Matrix.extract_attributes(file_content)
 
     # Seleciona quantidade de linhas a serem utilizadas
-    examples = Matrix.get_rows_matrix(file_content, 0, 2)
+    file_content = Matrix.get_rows_matrix(file_content, 0, 0)
 
     # Remove colunas com as saidas esperadas
-    examples = Matrix.remove_columns_2(examples, [4,5,6])
+    inputs = Matrix.remove_columns_2(file_content, [4,5,6])
 
-    # Converte elementos da matriz em float
-    examples = Matrix.to_float(examples)
+    # Devolve colunas com as saidas esperadas
+    outputs = Matrix.remove_columns_2(file_content, [0,1,2,3])
+
+    # Converte elementos das matrizes em float
+    inputs = Matrix.to_float(inputs)
+    outputs = Matrix.to_float(outputs)
 
     # Imprime matriz a ser utilizada
     print("Matriz de entrada: ", end='')
-    Matrix.print_matrix(examples)
+    Matrix.print_matrix(inputs)
 
     mlp = MLP()
-    for line in examples:
+    for i,line in enumerate(inputs):
+        e = epoch   # Variavel auxiliar de epocas
         mlp.initialize(line, [weight, weight, weight, weight], mi)
+        while e >= 0:
+            mlp.training(outputs[i], n)
+
+            e -= 1
 
 if __name__ == '__main__':
     main()

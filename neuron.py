@@ -38,3 +38,7 @@ class Neuron(object):
             sum += self.input[i] * self.weight[i]
 
         return sum
+
+    def recalculate_output(self):
+        # Calculada novamente a saida do neuronio
+        self.output = self.calculate_sigmoid()
