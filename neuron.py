@@ -6,7 +6,7 @@ import copy
 
 class Neuron(object):
     """Construtor da classe Neuron"""
-    def __init__(self, inputs, weights):
+    def __init__(self, inputs, weights, mi):
         # Lista de entradas do neurônio
         self.input = []
         self.input = copy.deepcopy(inputs)
@@ -15,6 +15,9 @@ class Neuron(object):
         self.weight = []
         self.weight = copy.deepcopy(weights)
 
+        # Potencial de ativacao do neuronio
+        self.mi = mi
+
         # Saida do neuronio
         self.output = self.calculate_sigmoid()
 
@@ -22,8 +25,8 @@ class Neuron(object):
         """ Calcula a funcao sigmoide """
         sum = self.sum_inputs()
 
-        e = math.exp(-2 * sum)  # e^2x
-        out = (2 / (1 + e) ) - 1
+        e = math.exp(-1 * (self.mi - sum))  # e^-1(x)
+        out = 1 / (1 + e)
 
         return out
 
