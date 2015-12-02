@@ -38,11 +38,12 @@ def main():
     Matrix.print_matrix(inputs)
 
     mlp = MLP()
+    mlp.initialize(line, [weight, weight, weight, weight], mi)
     for i,line in enumerate(inputs):
         e = epoch   # Variavel auxiliar de epocas
-        mlp.initialize(line, [weight, weight, weight, weight], mi)
+
         while e >= 0:
-            mlp.training(outputs[i], n)
+            mlp.calculate_output(outputs[i], n)
 
             e -= 1
 

@@ -9,10 +9,6 @@ class MLP(object):
     neurons_out = []    # Neuronios da camada de saida
 
     def initialize(self, inputs, weights, mi):
-        # Imprime linha a ser utilizada no momento
-        # print("\nEntradas utilizadas: ", inputs)
-
-
         inputs_out = []
         for i in range(len(inputs)):
             # Criando neuronios da camada escondida
@@ -23,35 +19,17 @@ class MLP(object):
         for i in range(self.qntd_out):
             # Criando neuronios da camada de saida
             self.neurons_out.append(Neuron(inputs_out, weights, mi))
-            # print("neurons_out.output[",i,"] = ", self.neurons_out[i].output)
 
-    def training(self, outputs, n):
-        """
-            Treinamento do neuronios da camada de saida
-        """
-        for i,n_out in enumerate(self.neurons_out):
+    def calculate_output(self, outputs, n):
+        out_error = []
+        in_error = []
 
-            # Atualiza o potencial de ativacao dos neuronios de saida
-            self.neurons_out[i].mi = n_out.mi + (n * (n_out.output - outputs[i]) * -1)
+        for i in range(len(self.neurons_out)):
+            out_error.append(outputs[i] - self.neurons_out[i].output)
 
-            for j,w_out in enumerate(n_out.weight):
-                # Atualiza os pesos dos neuronios de saida
-                self.neurons_out[i].weight[j] = w_out + (n * (n_out.output - outputs[i]) * n_out.input[j])
+        for i in range(len(self.neurons_in)):
+            error = 0
+            for j in range(len(self.neurons_out)):
+                error += out_error[j] * self.neurons_out[j].weight[i]
 
-            # Recalcula o valor de saida dos neuronios de saida
-            self.neurons_out[i].recalculate_output()
-
-        """
-            Treinamento do neuronios da camada escondida
-        """
-        for i,n_in in enumerate(self.neurons_in):
-
-            # Atualiza o potencial de ativacao dos neuronios de saida
-            self.neurons_in[i].mi = n_in.mi + (n * (n_in.output - outputs[i]) * -1)
-
-            for j,w_in in enumerate(n_in.weight):
-                # Atualiza os pesos dos neuronios de saida
-                self.neurons_in[i].weight[j] = w_in + (n * (n_in.output - outputs[i]) * n_in.input[j])
-
-            # Recalcula o valor de saida dos neuronios de saida
-            self.neurons_in[i].recalculate_output()
+            in_error.append(error)
