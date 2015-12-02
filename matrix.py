@@ -72,18 +72,24 @@ class Matrix:
         print("")
         for line in matrix:
             print(line)
-        print("")
 
 
     @staticmethod
-    def get_rows_matrix(matrix, ind_in, ind_out):
+    def get_rows_matrix(matrix, ind_in, ind_out=-1):
         """
         Retorna uma matriz comecando do ind_in e
         terminando no ind_out. A matriz original nao e alterada
         """
+        if ind_out < 0:
+            # Retorna a matriz inteira
+            ind_out = len(matrix)
+        else:
+            # Retorna a matriz ate onde foi especificado
+            ind_out += 1
+
         matrix_out = []
 
-        for i in range(ind_in, ind_out+1):
+        for i in range(ind_in, ind_out):
             matrix_out.append(matrix[i])
 
         return matrix_out

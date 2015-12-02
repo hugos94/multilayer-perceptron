@@ -3,12 +3,10 @@
 
 from file_manager import *
 import copy
-from neuron import *
+from mlp import *
 from matrix import *
 
 def main():
-    weight = 0.5
-
     fm = FileManager()
 
 	# Le os dados de entrada a partir de um arquivo csv
@@ -27,12 +25,12 @@ def main():
     examples = Matrix.to_float(examples)
 
     # Imprime matriz a ser utilizada
+    print("Matriz de entrada: ", end='')
     Matrix.print_matrix(examples)
 
+    mlp = MLP()
     for line in examples:
-        neuron = Neuron(line, [weight, weight, weight, weight])
-        print("sum_inputs = ", neuron.sum_inputs())
-        print("neuron.output = ", neuron.output)
+        mlp.initialize(line)
 
 if __name__ == '__main__':
     main()
