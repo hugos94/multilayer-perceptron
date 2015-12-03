@@ -3,6 +3,8 @@
 
 from neuron import *
 import random
+import copy
+
 class MLP(object):
 
 
@@ -32,7 +34,13 @@ class MLP(object):
             self.neurons_out.append(Neuron(inputs_out, weights_out, mi_out))
 
 
-    def calculate_output(self, outputs, n):
+    def execute(self, inputs):
+        for inp in self.neurons_in:
+            inp.input = copy.deepcopy(inputs)
+            inp.recalculate_output()
+
+
+    def update_weights(self, outputs, n):
         out_error = []
         in_error = []
 

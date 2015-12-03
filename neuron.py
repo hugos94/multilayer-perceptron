@@ -39,6 +39,10 @@ class Neuron(object):
 
         return sum
 
+    def recalculate_output(self):
+        """ Recalcula o valor de saida do neuronio """
+        self.output = self.calculate_sigmoid()
+
 
     def __str__(self):
         """Retorna uma representacao em string do neuronio"""
