@@ -41,24 +41,24 @@ class Application(tk.Frame):
         # Cria o botao para abrir o arquivo de treinamento
         tk.Button(self, text='Abrir Arquivo de Treinamento...', command=self.open_file_trainning).grid(column = 0, row = 0)
 
-        # Cria o botao para abrir o arquivo de teste
-        tk.Button(self, text='Abrir Arquivo de Teste...', command=self.open_file_test).grid(column = 1, row = 0)
+        # Cria o botao para inserir a quantidade de epocas do treinamento
+        tk.Button(self, text="Quantidade de Épocas", command=self.get_epoch).grid(column=1,row=0)
 
-        # Cria o botao para a quantidade de epocas do treinamento
-        tk.Button(self, text="Quantidade de Épocas", command=self.get_epoch).grid(column=2,row=0)
-
-        # Cria o botao para a taxa de aprendizagem do treinamento
-        tk.Button(self, text="Taxa de Aprendizagem", command=self.get_learning_tax).grid(column=3,row=0)
+        # Cria o botao para inserir a taxa de aprendizagem do treinamento
+        tk.Button(self, text="Taxa de Aprendizagem", command=self.get_learning_tax).grid(column=2,row=0)
 
         # Cria o botao para treinar a MLP
-        tk.Button(self, text='Treinar Rede Neural...', command=self.execute).grid(column = 4, row = 0)
+        tk.Button(self, text='Treinar Rede Neural...', command=self.trainning_mlp).grid(column = 3, row = 0)
+
+        # Cria o botao para abrir o arquivo de teste
+        tk.Button(self, text='Abrir Arquivo de Teste...', command=self.open_file_test).grid(column = 4, row = 0)
 
         # Cria o botao para testar a MLP
-        tk.Button(self, text='Testar Rede Neural...', command=self.execute).grid(column = 5, row = 0)
+        tk.Button(self, text='Testar Rede Neural...', command=self.test_mlp).grid(column = 5, row = 0)
 
 
     def open_file_trainning(self):
-        """Abre um File Dialog que retorna o nome do arquivo"""
+        """Abre um File Dialog que retorna o nome do arquivo de treinamento"""
 
         # Abre o FileDialog e recebe o nome do arquivo escolhido
         filename = filedialog.askopenfilename(**self.file_opt)
@@ -68,12 +68,12 @@ class Application(tk.Frame):
         if filename:
             fm = FileManager()
             # Le os dados de entrada a partir de um arquivo csv
-            file_content_trainning = fm.read_csv(filename)
+            self.file_content_trainning = fm.read_csv(filename)
             # Cria a label com o nome do arquivo carregado
             tk.Label(self, text=name).grid(column=0,row=1)
 
     def open_file_test(self):
-        """Abre um File Dialog que retorna o nome do arquivo"""
+        """Abre um File Dialog que retorna o nome do arquivo de teste"""
 
         # Abre o FileDialog e recebe o nome do arquivo escolhido
         filename = filedialog.askopenfilename(**self.file_opt)
@@ -83,17 +83,17 @@ class Application(tk.Frame):
         if filename:
             fm = FileManager()
             # Le os dados de entrada a partir de um arquivo csv
-            file_content_testing = fm.read_csv(filename)
+            self.file_content_testing = fm.read_csv(filename)
             # Cria a label com o nome do arquivo carregado
-            tk.Label(self, text=name).grid(column=1,row=1)
+            tk.Label(self, text=name).grid(column=4,row=1)
 
     def get_epoch(self):
-        # Cria uma nova janela pra exibir a arvore de decisao
+        """ Cria uma nova janela pra receber a quantidade de epocas para o treinamento. """
+
         self.window = tk.Toplevel(self)
         self.window.title("Quantidade de Epocas!")
         self.window.grid
 
-        # Cria uma label que ira conter a imagem da arvore de decisao
         tk.Label(self.window, text="Informe a quantidade de épocas:").grid(column=0,row=0)
 
         self.epoch = StringVar()
@@ -102,17 +102,17 @@ class Application(tk.Frame):
         tk.Button(self.window,text="Salvar!", command=self.verify_entry_epoch).grid(column=2,row=0)
 
     def verify_entry_epoch(self):
+        """ Metodo que verifica se a quantidade de epocas foi inserida. """
         if self.epoch.get():
-            tk.Label(self,text=self.epoch.get()).grid(column=2,row=1)
+            tk.Label(self,text=self.epoch.get()).grid(column=1,row=1)
             self.window.destroy()
 
     def get_learning_tax(self):
-        # Cria uma nova janela pra exibir a arvore de decisao
+        """ Cria uma nova janela pra receber a taxa de aprendizagem para o treinamento. """
         self.window = tk.Toplevel(self)
         self.window.title("Taxa de Aprendizagem!")
         self.window.grid
 
-        # Cria uma label que ira conter a imagem da arvore de decisao
         tk.Label(self.window, text="Informe a taxa de aprendizagem:").grid(column=0,row=0)
 
         self.learning_tax = StringVar()
@@ -121,12 +121,27 @@ class Application(tk.Frame):
         tk.Button(self.window,text="Salvar!", command=self.verify_entry_learning_tax).grid(column=2,row=0)
 
     def verify_entry_learning_tax(self):
+        """ Metodo que verifica se a taca de aprendizagem foi inserida. """
         if self.learning_tax.get():
-            tk.Label(self,text=self.learning_tax.get()).grid(column=3,row=1)
+            tk.Label(self,text=self.learning_tax.get()).grid(column=2,row=1)
             self.window.destroy()
 
-    def execute(self):
-        """Funcao que executa o algoritmo do Multilayer Perceptron"""
+    def trainning_mlp(self):
+        """ Funcao que treina o algoritmo do Multilayer Perceptron. """
+        #if (self.file_content_trainning and self.learning_tax.get() and self.epoch.get()):
+        #    print("Deu certo!")
+        #else:
+        #    tk.messagebox.showwarning("Nenhum atributo escolhido", "Escolha um atributo para continuar!")
+        #print(self.file_content_trainning)
+        #print(self.learning_tax.get())
+        #print(self.epoch.get())
+        pass
+
+    def test_mlp(self):
+        """ Funcao que testa o algoritmo do Multilayer Perceptron. """
+        #print(self.file_content_testing)
+        pass
+
 
 
 if __name__ == '__main__':
