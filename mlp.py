@@ -7,7 +7,6 @@ class MLP(object):
 
 
     def __init__(self, inputs, architecture=[4, 4, 3]):
-        print("ENTRADA = ", inputs)
         self.neurons_in = []    # Neuronios da camada escondida
         self.neurons_out = []   # Neuronios da camada de saida
 
@@ -46,3 +45,11 @@ class MLP(object):
                 error += out_error[j] * self.neurons_out[j].weight[i]
 
             in_error.append(error)
+
+        for i,inp in enumerate(self.neurons_in):
+            for j,wei in enumerate(inp.weight):
+                self.neurons_in[i].weight[j] = wei + (n * in_error[i] * inp.output)
+
+        for i,out in enumerate(self.neurons_out):
+            for j,wei in enumerate(out.weight):
+                self.neurons_out[i].weight[j] = wei + (n * out_error[i] * out.output)
