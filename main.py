@@ -8,7 +8,7 @@ from matrix import *
 
 def main():
     n = 0.5         # Taxa de aprendizagem
-    epoch = 2     # Quantidade de epocas
+    epoch = 5     # Quantidade de epocas
 
     fm = FileManager()
 
@@ -19,7 +19,7 @@ def main():
     attributes = Matrix.extract_attributes(file_content)
 
     # Seleciona quantidade de linhas a serem utilizadas
-    file_content = Matrix.get_rows_matrix(file_content, 0, 4)
+    file_content = Matrix.get_rows_matrix(file_content, 0, 5)
 
     # Remove colunas com as saidas esperadas
     inputs = Matrix.remove_columns_2(file_content, [4,5,6])
