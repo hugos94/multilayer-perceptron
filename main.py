@@ -7,8 +7,6 @@ from mlp import *
 from matrix import *
 
 def main():
-    weight = 0.5    # Pesos sinaptico inicial
-    mi = -0.2        # Potencial de ativacao
     n = 0.5         # Taxa de aprendizagem
     epoch = 0     # Quantidade de epocas
 
@@ -37,15 +35,24 @@ def main():
     print("Matriz de entrada: ", end='')
     Matrix.print_matrix(inputs)
 
-    mlp = MLP()
-    mlp.initialize(line, [weight, weight, weight, weight], mi)
-    for i,line in enumerate(inputs):
-        e = epoch   # Variavel auxiliar de epocas
+    # Utiliza primeira linha das entradas como inicializacao do MLP
+    mlp = MLP(inputs[0])
+    Matrix.get_rows_matrix_2(inputs, [0])
 
-        while e >= 0:
-            mlp.calculate_output(outputs[i], n)
+    for i,inp in enumerate(mlp.neurons_in):
+        print("Neuronio da escondida (", i, ")\n", inp)
 
-            e -= 1
+    for o,out in enumerate(mlp.neurons_out):
+        print("Neuronios de saida (", o, ")\n", out)
+    # while epoch >= 0:
+    #     epoch -= 1
+    #
+    #     for i,line in enumerate(inputs):
+            # Executa a rede MLP
+            #mlp.execute(line)
+
+            # Calcula o erro
+            #mlp.calculate_output(outputs[i], n)
 
 if __name__ == '__main__':
     main()

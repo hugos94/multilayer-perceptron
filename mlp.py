@@ -2,23 +2,36 @@
 # -*- coding: utf-8 -*-
 
 from neuron import *
-
+import random
 class MLP(object):
-    qntd_out = 3        # Quantidade de saidas
-    neurons_in = []        # Neuronios da camada escondida
-    neurons_out = []    # Neuronios da camada de saida
 
-    def initialize(self, inputs, weights, mi):
+
+    def __init__(self, inputs, architecture=[4, 4, 3]):
+        print("ENTRADA = ", inputs)
+        self.neurons_in = []    # Neuronios da camada escondida
+        self.neurons_out = []   # Neuronios da camada de saida
+
         inputs_out = []
-        for i in range(len(inputs)):
-            # Criando neuronios da camada escondida
-            self.neurons_in.append(Neuron(inputs, weights, mi))
-            # Preparando entradas dos neuronios da camada de saida
+
+        # Criando neuronios da camada escondida
+        for i in range(architecture[1]):
+            weights_in = []
+            for j in range(architecture[0]):
+                weights_in.append(random.random())
+
+            mi_in = random.random()
+            self.neurons_in.append(Neuron(inputs, weights_in, mi_in))
             inputs_out.append(self.neurons_in[i].output)
 
-        for i in range(self.qntd_out):
-            # Criando neuronios da camada de saida
-            self.neurons_out.append(Neuron(inputs_out, weights, mi))
+        # Criando neuronios da camada de saida
+        for i in range(architecture[2]):
+            weights_out = []
+            for j in range(architecture[1]):
+                weights_out.append(random.random())
+
+            mi_out = random.random()
+            self.neurons_out.append(Neuron(inputs_out, weights_out, mi_out))
+
 
     def calculate_output(self, outputs, n):
         out_error = []

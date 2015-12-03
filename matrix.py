@@ -95,6 +95,21 @@ class Matrix:
         return matrix_out
 
     @staticmethod
+    def get_rows_matrix_2(matrix, rows):
+        """
+        Retorna uma matriz comecando da linha ind_in e
+        terminando na linha ind_out. A matriz original e alterada
+        """
+        rows.reverse()
+        for r in rows:
+            for i in range(len(matrix)):
+                if r == i:
+                    matrix.pop(r)
+
+        return matrix
+
+
+    @staticmethod
     def to_float(matrix):
         """
         Converte os elementos da matriz em float.

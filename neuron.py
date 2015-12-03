@@ -39,6 +39,26 @@ class Neuron(object):
 
         return sum
 
-    def recalculate_output(self):
-        # Calculada novamente a saida do neuronio
-        self.output = self.calculate_sigmoid()
+
+    def __str__(self):
+        """Retorna uma representacao em string do neuronio"""
+        neuron_str = "--------------------------------------------------\n"
+        neuron_str += "Potencial = "
+        neuron_str += str(self.mi)
+        neuron_str += "\nEntradas = | "
+
+        for inp in self.input:
+            neuron_str += str(inp)
+            neuron_str += " | "
+        neuron_str += "\nPesos = | "
+
+        for wei in self.weight:
+            neuron_str += str(wei)
+            neuron_str += " | "
+        neuron_str += "\n"
+
+        neuron_str += "Saida = "
+        neuron_str += str(self.output)
+        neuron_str += "\n--------------------------------------------------\n"
+
+        return neuron_str
