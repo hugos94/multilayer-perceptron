@@ -6,7 +6,7 @@ import copy
 
 class Neuron(object):
     """Construtor da classe Neuron"""
-    def __init__(self, inputs, weights, mi):
+    def __init__(self, inputs, weights, theta):
         # Lista de entradas do neurônio
         self.input = []
         self.input = copy.deepcopy(inputs)
@@ -15,20 +15,36 @@ class Neuron(object):
         self.weight = []
         self.weight = copy.deepcopy(weights)
 
-        # Potencial de ativacao do neuronio
-        self.mi = mi
+        # Limiar de ativacao do neuronio
+        self.theta = theta
 
         # Saida do neuronio
         self.output = self.calculate_sigmoid()
 
     def calculate_sigmoid(self):
         """ Calcula a funcao sigmoide """
-        sum = self.sum_inputs()
+        beta = 1
+        potencial = self.sum_inputs() - self.theta
 
-        e = math.exp(-1 * (self.mi - sum))  # e^-1(x)
+        e = math.exp(-1 * beta * potencial)  # e^-1(x)
         out = 1 / (1 + e)
 
         return out
+
+
+    def calculate_derived_sigmoid(self):
+        """ Calcula a derivada da funcao sigmoide """
+        beta = 1
+        potencial = self.sum_inputs() - self.theta
+
+        e_1 = math.exp((-1 * beta * potencial) - 1)  # e^-1(x)
+        out = beta * potencial * e_1
+
+        e_2 = math.exp(-1 * beta * potencial)  # e^-1(x)
+        out = out / math.pow((1 + e_2), 2)
+
+        return out
+
 
     def sum_inputs(self):
         """ Calcula o somatorio das entradas * pesos """
@@ -48,7 +64,7 @@ class Neuron(object):
         """Retorna uma representacao em string do neuronio"""
         neuron_str = "--------------------------------------------------\n"
         neuron_str += "Potencial = "
-        neuron_str += str(self.mi)
+        neuron_str += str(self.theta)
         neuron_str += "\nEntradas = | "
 
         for inp in self.input:
