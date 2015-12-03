@@ -8,7 +8,7 @@ from matrix import *
 
 def main():
     n = 0.5         # Taxa de aprendizagem
-    epoch = 100     # Quantidade de epocas
+    epoch = 2     # Quantidade de epocas
 
     fm = FileManager()
 
@@ -35,34 +35,34 @@ def main():
     print("Matriz de entrada: ", end='')
     Matrix.print_matrix(inputs)
 
-    while epoch >= 0:   #""" (DO WHILE) OU ESTA NA FAIXA DE ERRO ACEITO """
-        epoch -= 1
+    e = epoch
+
+    while e > 0:   #""" (DO WHILE) OU ESTA NA FAIXA DE ERRO ACEITO """
+        e -= 1
 
         for i,line in enumerate(inputs):
-            if i != 0:
-                # Executa a rede MLP
-                mlp.execute(line)
-            else:
+            if e == (epoch - 1) and i == 0:
                 # Utiliza primeira linha das entradas como inicializacao do MLP
                 mlp = MLP(inputs[i])
+            else:
+                # Executa a rede MLP
+                mlp.execute(line)
 
             #""" TESTAR SE SAIDA EH IGUAL A ESPERADA """
             # Calcula o erro
             if not mlp.error():
                 mlp.update_weights(outputs[i], n)
 
-            if epoch == 0:
+            if e == 0:
                 print("---: NEURONIO", i, ":---")
                 for neu in mlp.neurons_out:
                     print(neu.output)
                 print()
 
-
-    # print("     DEPOIS")
-    # for i,inp in enumerate(mlp.neurons_in):
-    #     print("Neuronio da escondida (", i, ")\n", inp)
-    # for o,out in enumerate(mlp.neurons_out):
-    #     print("Neuronios de saida (", o, ")\n", out)
+                # for i,inp in enumerate(mlp.neurons_in):
+                #     print("Neuronio da escondida (", i, ")\n", inp)
+                # for o,out in enumerate(mlp.neurons_out):
+                #     print("Neuronios de saida (", o, ")\n", out)
 
 
 if __name__ == '__main__':

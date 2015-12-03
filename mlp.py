@@ -45,7 +45,11 @@ class MLP(object):
 
         for inp in self.neurons_in:
             # Modifica os valores de entrada para os neuronios da camada escondida
+            # if not len(inputs_out):
+            #     print("ENTRADAS ANTES = ", inp.input)
             inp.input = copy.deepcopy(inputs)
+            # if not len(inputs_out):
+            #     print("ENTRADAS DEPOIS = ", inp.input)
 
             # Recalcula a saida do neuronio com as novas entradas
             inp.recalculate_output()
@@ -55,7 +59,11 @@ class MLP(object):
 
         # Modifica os valores de entrada para os neuronios da camada de saida
         for i in range(len(self.neurons_out)):
+            # if i == 0:
+            #     print("SAIDAS ANTES = ", self.neurons_out[i].input)
             self.neurons_out[i].input = copy.deepcopy(inputs_out)
+            # if i == 0:
+            #     print("SAIDAS DEPOIS = ", self.neurons_out[i].input)
 
 
 
