@@ -21,7 +21,7 @@ def main():
     # Seleciona quantidade de linhas a serem utilizadas
     file_content = Matrix.get_rows_matrix(file_content, 0, 5)
 
-    # Remove colunas com as saidas esperadas
+    # Devolve colunas com as entradas
     inputs = Matrix.remove_columns_2(file_content, [4,5,6])
 
     # Devolve colunas com as saidas esperadas
