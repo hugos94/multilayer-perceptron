@@ -8,6 +8,9 @@ from tkinter import StringVar
 from tkinter import messagebox
 
 from file_manager import *
+import copy
+from mlp import *
+from matrix import *
 
 class Application(tk.Frame):
     """docstring for Application"""
@@ -53,7 +56,7 @@ class Application(tk.Frame):
         tk.Button(self, text="Arquitetura", command=self.set_architecture).grid(column=3,row=0)
 
         # Cria o botao para treinar o MLP
-        tk.Button(self, text='Treinar Rede Neural...', command=self.trainning_mlp).grid(column = 4, row = 0)
+        tk.Button(self, text='Treinar Rede Neural...', command=self.verify_trainning_mlp).grid(column = 4, row = 0)
 
         # Cria o botao para abrir o arquivo de teste
         tk.Button(self, text='Abrir Arquivo de Teste...', command=self.open_file_test).grid(column = 5, row = 0)
@@ -168,7 +171,8 @@ class Application(tk.Frame):
         if self.in_layer.get():
             if self.hidden_layer.get():
                 if self.out_layer.get():
-                    tk.Label(self,text=""+self.in_layer.get()+"-"+self.hidden_layer.get()+"-"+self.out_layer.get()).grid(column=3,row=1)
+                    self.architecture_type = self.in_layer.get() + "-" + self.hidden_layer.get() + "-" + self.out_layer.get()
+                    tk.Label(self,text=self.architecture_type).grid(column=3,row=1)
                     self.window.destroy()
                 else:
                     tk.messagebox.showwarning("Numero de neuronios na camada de saida nao informado", "Informe o numero de neuronios na camada de saida para continuar!")
@@ -178,17 +182,85 @@ class Application(tk.Frame):
             tk.messagebox.showwarning("Numero de entradas nao informado", "Informe o numero de entradas para continuar!")
 
 
+    def verify_trainning_mlp(self):
+        """ Verifica se todos os atributos para treinar o MLP foram inseridos. """
+        try:
+            if self.file_content_trainning:
+                try:
+                    if self.epoch.get():
+                        try:
+                            if self.learning_tax.get():
+                                self.trainning_mlp()
+                        except AttributeError:
+                            tk.messagebox.showwarning("Taxa de Aprendizagem nao informada", "Informe a taxa de aprendizagem para continuar!")
+                except AttributeError:
+                    tk.messagebox.showwarning("Quantidade de epocas nao informado", "Informe a quantidade de epocas para continuar!")
+        except AttributeError:
+            tk.messagebox.showwarning("Arquivo de treinamento nao informado", "Informe o arquivo de treinamento para continuar!")
+
     def trainning_mlp(self):
         """ Funcao que treina o algoritmo do Multilayer Perceptron. """
 
-        #if (self.file_content_trainning and self.learning_tax.get() and self.epoch.get()):
-        #    print("Deu certo!")
-        #else:
-        #    tk.messagebox.showwarning("Nenhum atributo escolhido", "Escolha um atributo para continuar!")
-        #print(self.file_content_trainning)
-        #print(self.learning_tax.get())
-        #print(self.epoch.get())
-        pass
+        n = self.learning_tax.get()         # Taxa de aprendizagem
+        epoch = self.epoch.get()     # Quantidade de epocas
+
+        print(n)
+        print(epoch)
+
+        fm = FileManager()
+
+    	# Le os dados de entrada a partir de um arquivo csv
+        file_content = fm.read_csv("Treinamento.csv")
+
+        # Remove a lista de atributos do arquivo
+        attributes = Matrix.extract_attributes(file_content)
+
+        # Seleciona quantidade de linhas a serem utilizadas
+        file_content = Matrix.get_rows_matrix(file_content, 0, 5)
+
+        # Devolve colunas com as entradas
+        inputs = Matrix.remove_columns_2(file_content, [4,5,6])
+
+        # Devolve colunas com as saidas esperadas
+        outputs = Matrix.remove_columns_2(file_content, [0,1,2,3])
+
+        # Converte elementos das matrizes em float
+        inputs = Matrix.to_float(inputs)
+        outputs = Matrix.to_float(outputs)
+
+        # Imprime matriz a ser utilizada
+        print("Matriz de entrada: ", end='')
+        Matrix.print_matrix(inputs)
+
+        e = epoch
+
+        while e > 0:   #""" (DO WHILE) OU ESTA NA FAIXA DE ERRO ACEITO """
+            e -= 1
+
+            for i,line in enumerate(inputs):
+                if e == (epoch - 1) and i == 0:
+                    # Utiliza primeira linha das entradas como inicializacao do MLP
+                    mlp = MLP(inputs[i])
+                else:
+                    # Executa a rede MLP
+                    mlp.execute(line)
+
+                #""" TESTAR SE SAIDA EH IGUAL A ESPERADA """
+                # Calcula o erro
+                if not mlp.error():
+                    mlp.update_weights(outputs[i], n)
+
+                if e == 0:
+                    print("---: NEURONIO", i, ":---")
+                    for neu in mlp.neurons_out:
+                        print(neu.output)
+                    print()
+
+                    # for i,inp in enumerate(mlp.neurons_in):
+                    #     print("Neuronio da escondida (", i, ")\n", inp)
+                    # for o,out in enumerate(mlp.neurons_out):
+                    #     print("Neuronios de saida (", o, ")\n", out)
+
 
 
     def test_mlp(self):
