@@ -15,7 +15,7 @@ def main():
 	# Le os dados de entrada a partir de um arquivo csv
     file_content = fm.read_csv("Treinamento.csv")
 
-    # Lista de atributos do arquivo
+    # Remove a lista de atributos do arquivo
     attributes = Matrix.extract_attributes(file_content)
 
     # Seleciona quantidade de linhas a serem utilizadas

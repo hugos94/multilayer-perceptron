@@ -201,16 +201,10 @@ class Application(tk.Frame):
     def trainning_mlp(self):
         """ Funcao que treina o algoritmo do Multilayer Perceptron. """
 
-        n = self.learning_tax.get()         # Taxa de aprendizagem
-        epoch = self.epoch.get()     # Quantidade de epocas
-
-        print(n)
-        print(epoch)
-
         fm = FileManager()
 
     	# Le os dados de entrada a partir de um arquivo csv
-        file_content = fm.read_csv("Treinamento.csv")
+        file_content = fm.read_csv(self.file_content_trainning)
 
         # Remove a lista de atributos do arquivo
         attributes = Matrix.extract_attributes(file_content)
