@@ -6,10 +6,10 @@ import copy
 
 class Neuron(object):
     """Construtor da classe Neuron"""
-    def __init__(self, inputs, weights, theta):
-        # Lista de entradas do neurônio
+    def __init__(self, weights, theta):
+
         self.input = []
-        self.input = copy.deepcopy(inputs)
+        self.input = copy.deepcopy(weights)
 
         # Lista de pesos para cada entrada
         self.weight = []
@@ -19,7 +19,7 @@ class Neuron(object):
         self.theta = theta
 
         # Saida do neuronio
-        self.output = self.calculate_sigmoid()
+        self.output = 0.0
 
     def calculate_sigmoid(self):
         """ Calcula a funcao sigmoide """
@@ -49,7 +49,6 @@ class Neuron(object):
     def sum_inputs(self):
         """ Calcula o somatorio das entradas * pesos """
         sum = 0
-
         for i in range(len(self.input)):
             sum += self.input[i] * self.weight[i]
 
