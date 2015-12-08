@@ -60,11 +60,11 @@ class MLP(object):
             if not self.error():
                 self.update_weights(outputs[i], learning_tax)
 
-            if epoch == i:
-                print("---: NEURONIO", i, ":---")
-                for neu in self.neurons_out:
-                    print(neu.output)
-                print()
+        if epoch == i:
+            print("---: NEURONIO", i, ":---")
+            for neu in self.neurons_out:
+                print(neu.output)
+            print()
 
 
     def update_weights(self, outputs, n):
