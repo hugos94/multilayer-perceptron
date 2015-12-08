@@ -82,11 +82,8 @@ class MLP(object):
 
             # Recalcula a saida do neuronio com as novas entradas
             self.neurons_out[i].recalculate_output()
-            print("Saida i")
+            print("Saida: " + str(i))
             print(self.neurons_out[i].output)
-
-
-
 
     def update_weights(self, outputs, n):
         out_error = []

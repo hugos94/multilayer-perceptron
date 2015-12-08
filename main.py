@@ -17,7 +17,7 @@ def main():
     attributes = Matrix.extract_attributes(file_content)
 
     # Seleciona quantidade de linhas a serem utilizadas
-    file_content = Matrix.get_rows_matrix(file_content, 0, 5)
+    file_content = Matrix.get_rows_matrix(file_content, 0, 100)
 
     # Devolve colunas com as entradas
     inputs = Matrix.remove_columns_2(file_content, [4,5,6])
@@ -34,11 +34,13 @@ def main():
     Matrix.print_matrix(inputs)
 
     learning_tax = 0.5  # Taxa de aprendizagem
-    epoch = 5   # Quantidade de epocas
+    epoch = 1000   # Quantidade de epocas
 
     mlp = MLP()
 
     mlp.trainning(epoch, learning_tax, inputs, outputs)
+
+    mlp.test(inputs, outputs)
 
 if __name__ == '__main__':
     main()
