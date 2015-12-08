@@ -78,12 +78,11 @@ class MLP(object):
 
         for oup in self.neurons_out:
             # Modifica os valores de entrada para os neuronios da camada de saida
-            self.neurons_out[i].input = copy.deepcopy(inputs_out)
+            oup.input = copy.deepcopy(inputs_out)
 
             # Recalcula a saida do neuronio com as novas entradas
-            self.neurons_out[i].recalculate_output()
-            print("Saida: " + str(i))
-            print(self.neurons_out[i].output)
+            oup.recalculate_output()
+            print(oup.output)
 
     def update_weights(self, outputs, n):
         out_error = []
