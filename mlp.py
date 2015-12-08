@@ -8,11 +8,9 @@ import copy
 class MLP(object):
 
 
-    def __init__(self, inputs, architecture=[4, 4, 3]):
+    def __init__(self, architecture=[4, 4, 3]):
         self.neurons_in = []    # Neuronios da camada escondida
         self.neurons_out = []   # Neuronios da camada de saida
-
-        inputs_out = []
 
         # Criando neuronios da camada escondida
         for i in range(architecture[1]):
@@ -23,10 +21,7 @@ class MLP(object):
 
             # Criando limiar  de ativacao com valor aleatorio
             theta_in = random.random()
-            self.neurons_in.append(Neuron(inputs, weights_in, theta_in))
-
-            # Entradas para os neuronios da camada de saida
-            inputs_out.append(self.neurons_in[i].output)
+            self.neurons_in.append(Neuron(weights_in, theta_in))
 
         # Criando neuronios da camada de saida
         for i in range(architecture[2]):
@@ -37,29 +32,39 @@ class MLP(object):
 
             # Criando limiar de ativacao com valor aleatorio
             theta_out = random.random()
-            self.neurons_out.append(Neuron(inputs_out, weights_out, theta_out))
+            self.neurons_out.append(Neuron(weights_out, theta_out))
 
+    def trainning(self, epoch, learning_tax, inputs, outputs):
+        for i in range(epoch):
+            inputs_out = []
 
-    def execute(self, inputs):
-        inputs_out = []
+            for inp in self.neurons_in:
+                # Modifica os valores de entrada para os neuronios da camada escondida
+                inp.input = copy.deepcopy(inputs[i])
 
-        for inp in self.neurons_in:
-            # Modifica os valores de entrada para os neuronios da camada escondida
-            inp.input = copy.deepcopy(inputs)
+                # Recalcula a saida do neuronio com as novas entradas
+                inp.recalculate_output()
 
-            # Recalcula a saida do neuronio com as novas entradas
-            inp.recalculate_output()
+                # Valores de entrada para os neuronios da camada de saida
+                inputs_out.append(inp.output)
 
-            # Valores de entrada para os neuronios da camada de saida
-            inputs_out.append(inp.output)
+            for i in range(len(self.neurons_out)):
+                # Modifica os valores de entrada para os neuronios da camada de saida
+                self.neurons_out[i].input = copy.deepcopy(inputs_out)
 
-        for i in range(len(self.neurons_out)):
-            # Modifica os valores de entrada para os neuronios da camada de saida
-            self.neurons_out[i].input = copy.deepcopy(inputs_out)
+                # Recalcula a saida do neuronio com as novas entradas
+                self.neurons_out[i].recalculate_output()
 
-            # Recalcula a saida do neuronio com as novas entradas
-            self.neurons_out[i].recalculate_output()
+            #""" TESTAR SE SAIDA EH IGUAL A ESPERADA """
+            # Calcula o erro
+            if not self.error():
+                self.update_weights(outputs[i], learning_tax)
 
+            if epoch == i:
+                print("---: NEURONIO", i, ":---")
+                for neu in self.neurons_out:
+                    print(neu.output)
+                print()
 
 
     def update_weights(self, outputs, n):
