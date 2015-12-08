@@ -7,8 +7,6 @@ from mlp import *
 from matrix import *
 
 def main():
-    n = 0.5         # Taxa de aprendizagem
-    epoch = 5     # Quantidade de epocas
 
     fm = FileManager()
 
@@ -35,35 +33,12 @@ def main():
     print("Matriz de entrada: ", end='')
     Matrix.print_matrix(inputs)
 
-    e = epoch
+    learning_tax = 0.5  # Taxa de aprendizagem
+    epoch = 5   # Quantidade de epocas
 
-    while e > 0:   #""" (DO WHILE) OU ESTA NA FAIXA DE ERRO ACEITO """
-        e -= 1
+    mlp = MLP()
 
-        for i,line in enumerate(inputs):
-            if e == (epoch - 1) and i == 0:
-                # Utiliza primeira linha das entradas como inicializacao do MLP
-                mlp = MLP(inputs[i])
-            else:
-                # Executa a rede MLP
-                mlp.execute(line)
-
-            #""" TESTAR SE SAIDA EH IGUAL A ESPERADA """
-            # Calcula o erro
-            if not mlp.error():
-                mlp.update_weights(outputs[i], n)
-
-            if e == 0:
-                print("---: NEURONIO", i, ":---")
-                for neu in mlp.neurons_out:
-                    print(neu.output)
-                print()
-
-                # for i,inp in enumerate(mlp.neurons_in):
-                #     print("Neuronio da escondida (", i, ")\n", inp)
-                # for o,out in enumerate(mlp.neurons_out):
-                #     print("Neuronios de saida (", o, ")\n", out)
-
+    mlp.trainning(epoch, learning_tax, inputs, outputs)
 
 if __name__ == '__main__':
     main()
