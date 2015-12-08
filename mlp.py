@@ -35,36 +35,35 @@ class MLP(object):
             self.neurons_out.append(Neuron(weights_out, theta_out))
 
     def trainning(self, epoch, learning_tax, inputs, outputs):
-        for i in range(epoch):
-            inputs_out = []
+        for j in range(epoch+1):
+            for i in range(len(inputs)):
+                inputs_out = []
 
-            for inp in self.neurons_in:
-                # Modifica os valores de entrada para os neuronios da camada escondida
-                inp.input = copy.deepcopy(inputs[i])
+                for inp in self.neurons_in:
+                    # Modifica os valores de entrada para os neuronios da camada escondida
+                    inp.input = copy.deepcopy(inputs[i])
 
-                # Recalcula a saida do neuronio com as novas entradas
-                inp.recalculate_output()
+                    # Recalcula a saida do neuronio com as novas entradas
+                    inp.recalculate_output()
 
-                # Valores de entrada para os neuronios da camada de saida
-                inputs_out.append(inp.output)
+                    # Valores de entrada para os neuronios da camada de saida
+                    inputs_out.append(inp.output)
 
-            for i in range(len(self.neurons_out)):
-                # Modifica os valores de entrada para os neuronios da camada de saida
-                self.neurons_out[i].input = copy.deepcopy(inputs_out)
+                for i in range(len(self.neurons_out)):
+                    # Modifica os valores de entrada para os neuronios da camada de saida
+                    self.neurons_out[i].input = copy.deepcopy(inputs_out)
 
-                # Recalcula a saida do neuronio com as novas entradas
-                self.neurons_out[i].recalculate_output()
+                    # Recalcula a saida do neuronio com as novas entradas
+                    self.neurons_out[i].recalculate_output()
 
-            #""" TESTAR SE SAIDA EH IGUAL A ESPERADA """
-            # Calcula o erro
-            if not self.error():
-                self.update_weights(outputs[i], learning_tax)
+                #""" TESTAR SE SAIDA EH IGUAL A ESPERADA """
+                # Calcula o erro
+                if not self.error():
+                    self.update_weights(outputs[i], learning_tax)
 
-        if epoch == i:
-            print("---: NEURONIO", i, ":---")
-            for neu in self.neurons_out:
-                print(neu.output)
-            print()
+            print("Epoca " + str(j))
+            for k in self.neurons_out:
+                print(k)
 
 
     def update_weights(self, outputs, n):
