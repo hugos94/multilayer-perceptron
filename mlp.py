@@ -34,6 +34,7 @@ class MLP(object):
             theta_out = random.random()
             self.neurons_out.append(Neuron(weights_out, theta_out))
 
+
     def trainning(self, epoch, learning_tax, inputs, outputs):
         for j in range(epoch+1):
             for i in range(len(inputs)):
@@ -49,21 +50,42 @@ class MLP(object):
                     # Valores de entrada para os neuronios da camada de saida
                     inputs_out.append(inp.output)
 
-                for i in range(len(self.neurons_out)):
+                for oup in self.neurons_out:
                     # Modifica os valores de entrada para os neuronios da camada de saida
-                    self.neurons_out[i].input = copy.deepcopy(inputs_out)
+                    oup.input = copy.deepcopy(inputs_out)
 
                     # Recalcula a saida do neuronio com as novas entradas
-                    self.neurons_out[i].recalculate_output()
+                    oup.recalculate_output()
 
                 #""" TESTAR SE SAIDA EH IGUAL A ESPERADA """
                 # Calcula o erro
                 if not self.error():
                     self.update_weights(outputs[i], learning_tax)
 
-            print("Epoca " + str(j))
-            for k in self.neurons_out:
-                print(k)
+    def test(self, inputs, outputs):
+        i = 0
+        inputs_out = []
+
+        for inp in self.neurons_in:
+            # Modifica os valores de entrada para os neuronios da camada escondida
+            inp.input = copy.deepcopy(inputs[i])
+
+            # Recalcula a saida do neuronio com as novas entradas
+            inp.recalculate_output()
+
+            # Valores de entrada para os neuronios da camada de saida
+            inputs_out.append(inp.output)
+
+        for oup in self.neurons_out:
+            # Modifica os valores de entrada para os neuronios da camada de saida
+            self.neurons_out[i].input = copy.deepcopy(inputs_out)
+
+            # Recalcula a saida do neuronio com as novas entradas
+            self.neurons_out[i].recalculate_output()
+            print("Saida i")
+            print(self.neurons_out[i].output)
+
+
 
 
     def update_weights(self, outputs, n):
