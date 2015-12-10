@@ -14,28 +14,34 @@ class MLP(object):
 
         # Criando neuronios da camada escondida
         for i in range(architecture[1]):
-            weights_in = []
+            weights = []
+            #print("Neuron In: " + str(i))
             for j in range(architecture[0]):
                 # Criando pesos com valores aleatorios
-                weights_in.append(random.random())
+                weights.append(random.random())
 
-            # Criando limiar  de ativacao com valor aleatorio
-            theta_in = random.random()
-            self.neurons_in.append(Neuron(weights_in, theta_in))
+            #print(weights)
+            # Criando limiar de ativacao com valor aleatorio
+            theta = random.random()
+            self.neurons_in.append(Neuron(weights, theta))
 
         # Criando neuronios da camada de saida
         for i in range(architecture[2]):
-            weights_out = []
+            #print("Neuron Out: " + str(i))
+
+            weights = []
             for j in range(architecture[1]):
                 # Criando pesos com valores aleatorios
-                weights_out.append(random.random())
-
+                weights.append(random.random())
+            #print(weights)
             # Criando limiar de ativacao com valor aleatorio
-            theta_out = random.random()
-            self.neurons_out.append(Neuron(weights_out, theta_out))
+            theta = random.random()
+            self.neurons_out.append(Neuron(weights, theta))
 
 
     def trainning(self, epoch, learning_tax, inputs, outputs):
+        # for oup in self.neurons_out:
+        #     print (oup.output)
         for j in range(epoch+1):
             for i in range(len(inputs)):
                 inputs_out = []
@@ -62,27 +68,39 @@ class MLP(object):
                 if not self.error():
                     self.update_weights(outputs[i], learning_tax)
 
+        #     print("Epoca " + str(j))
+        #     for oup in self.neurons_out:
+        #         print (oup.output)
+        # print("Final:")
+        # for oup in self.neurons_out:
+        #     print (oup.output)
+
     def test(self, inputs, outputs):
-        i = 0
-        inputs_out = []
+        for i in range(len(inputs)):
+            print("Teste " + str(i))
+            inputs_out = []
 
-        for inp in self.neurons_in:
-            # Modifica os valores de entrada para os neuronios da camada escondida
-            inp.input = copy.deepcopy(inputs[i])
+            for inp in self.neurons_in:
+                # Modifica os valores de entrada para os neuronios da camada escondida
+                inp.input = copy.deepcopy(inputs[i])
 
-            # Recalcula a saida do neuronio com as novas entradas
-            inp.recalculate_output()
+                # Recalcula a saida do neuronio com as novas entradas
+                inp.recalculate_output()
 
-            # Valores de entrada para os neuronios da camada de saida
-            inputs_out.append(inp.output)
+                # Valores de entrada para os neuronios da camada de saida
+                inputs_out.append(inp.output)
 
-        for oup in self.neurons_out:
-            # Modifica os valores de entrada para os neuronios da camada de saida
-            oup.input = copy.deepcopy(inputs_out)
+            for oup in self.neurons_out:
+                # Modifica os valores de entrada para os neuronios da camada de saida
+                oup.input = copy.deepcopy(inputs_out)
 
-            # Recalcula a saida do neuronio com as novas entradas
-            oup.recalculate_output()
-            print(oup.output)
+                # Recalcula a saida do neuronio com as novas entradas
+                oup.recalculate_output()
+
+                print(oup.output)
+
+            print(outputs[i])
+
 
     def update_weights(self, outputs, n):
         out_error = []

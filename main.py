@@ -34,7 +34,7 @@ def main():
     Matrix.print_matrix(inputs)
 
     learning_tax = 0.5  # Taxa de aprendizagem
-    epoch = 1000   # Quantidade de epocas
+    epoch = 100   # Quantidade de epocas
 
     mlp = MLP()
 
