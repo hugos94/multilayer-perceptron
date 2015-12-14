@@ -88,6 +88,10 @@ class MLP(object):
             for i in range(len(inputs)):
                 inputs_out = []
 
+                # Atualiza as entradas do grafo
+                for k in range(self.architecture[0]):
+                    self.dot.node("input"+str(k+1),"Input:"+ str(k) + "\nValue:" + str(inputs[i][k]))
+
                 for inp in self.neurons_in:
                     # Modifica os valores de entrada para os neuronios da camada escondida
                     inp.input = copy.deepcopy(inputs[i])
@@ -98,8 +102,9 @@ class MLP(object):
                     # Valores de entrada para os neuronios da camada de saida
                     inputs_out.append(inp.output)
 
-                for k in range(len(self.neurons_in)):
-                    self.dot.node("input"+str(k+1),"Input:"+ str(k) + "\nValue:" + str(inputs[i][k]))
+                # Atualiza as entradas da camada escondida
+                for k in range(self.architecture[1]):
+                    self.dot.node("hidden_layer"+str(k+1),"Neuron:"+ str(k) + "\nValue:" + str(round(self.neurons_in[k].sum_inputs(),3)))
 
                 for oup in self.neurons_out:
                     # Modifica os valores de entrada para os neuronios da camada de saida
