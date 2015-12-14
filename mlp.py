@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from graphviz import Digraph
 from neuron import *
 import random
 import copy
@@ -9,9 +10,21 @@ class MLP(object):
 
 
     def __init__(self, architecture=[4, 4, 3]):
-        
+
+        # Cria a estrutura do MLP
+        self.dot = Digraph(format='png')
+        self.dot.body.extend(['rankdir=LR', 'size="8,5"'])
+
         self.neurons_in = []    # Neuronios da camada escondida
         self.neurons_out = []   # Neuronios da camada de saida
+
+        self.dot.attr('node', shape='cube')
+
+        # Cria as entradas dos neuronios
+        for i in range(architecture[0]):
+            self.dot.node("input"+str(i+1),"Input:"+ str(i) + "\nValue:" + str(0))
+
+        self.dot.attr('node', shape='circle')
 
         # Criando neuronios da camada escondida
         for i in range(architecture[1]):
@@ -25,6 +38,10 @@ class MLP(object):
             theta = random.random()
             self.neurons_in.append(Neuron(weights, theta))
 
+            # Cria a estrutura do neuronio da camada escondida no grafo
+            self.dot.node("hidden_layer"+str(i+1), "Neuron:"+str(i+1) + "\nValue:" + str(0))
+
+
         # Criando neuronios da camada de saida
         for i in range(architecture[2]):
             #print("Neuron Out: " + str(i))
@@ -36,6 +53,26 @@ class MLP(object):
             # Criando limiar de ativacao com valor aleatorio
             theta = random.random()
             self.neurons_out.append(Neuron(weights, theta))
+
+            # Cria a estrutura do neuronio da camada de saida do grafo
+            self.dot.node("out_layer"+str(i+1), "Neuron:"+str(i+1) + "\nValue:" + str(0))
+
+        # Cria o no de saida n grafo
+        self.dot.node("out","out")
+
+        for i in range(architecture[0]):
+            for j in range(architecture[1]):
+                self.dot.edge("input"+str(i+1),"hidden_layer"+str(j+1), label="\t\t" + str(round(self.neurons_in[j].weight[i],3)) + "\t\t")
+
+        for i in range(architecture[1]):
+            for j in range(architecture[2]):
+                self.dot.edge("hidden_layer"+str(i+1),"out_layer"+str(j+1), label="\t\t" + str(round(self.neurons_out[j].weight[i],3)) + "\t\t")
+
+        for i in range(architecture[2]):
+            self.dot.edge("out_layer"+(str(i+1)), "out", label="\t\t" +str(self.neurons_out[i].output) + "\t\t")
+
+        # Renderiza a arvore de decisao
+        self.dot.render(view=True, cleanup=False)
 
 
     def trainning(self, epoch, learning_tax, inputs, outputs):
