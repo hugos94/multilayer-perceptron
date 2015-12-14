@@ -17,7 +17,7 @@ def main():
     attributes = Matrix.extract_attributes(file_content)
 
     # Seleciona quantidade de linhas a serem utilizadas
-    file_content = Matrix.get_rows_matrix(file_content, 0, 5)
+    file_content = Matrix.get_rows_matrix(file_content, 0, 2)
 
     # Devolve colunas com as entradas
     inputs = Matrix.remove_columns_2(file_content, [4,5,6])

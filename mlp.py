@@ -113,6 +113,10 @@ class MLP(object):
                     # Recalcula a saida do neuronio com as novas entradas
                     oup.recalculate_output()
 
+                for k in range(self.architecture[2]):
+                    self.dot.node("out_layer"+str(k+1),"Neuron:"+ str(k) + "\nValue:" + str(round(self.neurons_out[k].sum_inputs(),3)))
+
+
                 #""" TESTAR SE SAIDA EH IGUAL A ESPERADA """
                 # Calcula o erro
                 if not self.error():
