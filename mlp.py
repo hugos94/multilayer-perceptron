@@ -9,6 +9,7 @@ class MLP(object):
 
 
     def __init__(self, architecture=[4, 4, 3]):
+        
         self.neurons_in = []    # Neuronios da camada escondida
         self.neurons_out = []   # Neuronios da camada de saida
 
@@ -19,7 +20,6 @@ class MLP(object):
             for j in range(architecture[0]):
                 # Criando pesos com valores aleatorios
                 weights.append(random.random())
-
             #print(weights)
             # Criando limiar de ativacao com valor aleatorio
             theta = random.random()
@@ -28,7 +28,6 @@ class MLP(object):
         # Criando neuronios da camada de saida
         for i in range(architecture[2]):
             #print("Neuron Out: " + str(i))
-
             weights = []
             for j in range(architecture[1]):
                 # Criando pesos com valores aleatorios
