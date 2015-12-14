@@ -5,11 +5,14 @@ from graphviz import Digraph
 from neuron import *
 import random
 import copy
+import time
 
 class MLP(object):
 
 
     def __init__(self, architecture=[4, 4, 3]):
+
+        self.architecture = architecture
 
         # Cria a estrutura do MLP
         self.dot = Digraph(format='png')
@@ -18,22 +21,22 @@ class MLP(object):
         self.neurons_in = []    # Neuronios da camada escondida
         self.neurons_out = []   # Neuronios da camada de saida
 
-        self.dot.attr('node', shape='cube')
+        # Alterando o tipo de no para cubo
+        self.dot.attr('node', shape='box')
 
         # Cria as entradas dos neuronios
         for i in range(architecture[0]):
             self.dot.node("input"+str(i+1),"Input:"+ str(i) + "\nValue:" + str(0))
 
+        # Alterando o tipo de no para circulo
         self.dot.attr('node', shape='circle')
 
         # Criando neuronios da camada escondida
         for i in range(architecture[1]):
             weights = []
-            #print("Neuron In: " + str(i))
             for j in range(architecture[0]):
                 # Criando pesos com valores aleatorios
                 weights.append(random.random())
-            #print(weights)
             # Criando limiar de ativacao com valor aleatorio
             theta = random.random()
             self.neurons_in.append(Neuron(weights, theta))
@@ -44,12 +47,10 @@ class MLP(object):
 
         # Criando neuronios da camada de saida
         for i in range(architecture[2]):
-            #print("Neuron Out: " + str(i))
             weights = []
             for j in range(architecture[1]):
                 # Criando pesos com valores aleatorios
                 weights.append(random.random())
-            #print(weights)
             # Criando limiar de ativacao com valor aleatorio
             theta = random.random()
             self.neurons_out.append(Neuron(weights, theta))
@@ -60,19 +61,24 @@ class MLP(object):
         # Cria o no de saida n grafo
         self.dot.node("out","out")
 
+        # Cria as ligacoes entre as entradas e a camada escondida
         for i in range(architecture[0]):
             for j in range(architecture[1]):
                 self.dot.edge("input"+str(i+1),"hidden_layer"+str(j+1), label="\t\t" + str(round(self.neurons_in[j].weight[i],3)) + "\t\t")
 
+        # Cria as ligacoes entre a camada escondida e a camada de saida
         for i in range(architecture[1]):
             for j in range(architecture[2]):
                 self.dot.edge("hidden_layer"+str(i+1),"out_layer"+str(j+1), label="\t\t" + str(round(self.neurons_out[j].weight[i],3)) + "\t\t")
 
+        # Cria as ligacoes entre a camada de saida e a saida final
         for i in range(architecture[2]):
             self.dot.edge("out_layer"+(str(i+1)), "out", label="\t\t" +str(self.neurons_out[i].output) + "\t\t")
 
         # Renderiza a arvore de decisao
-        self.dot.render(view=True, cleanup=False)
+        self.dot.render(view=True, cleanup=True)
+
+        time.sleep(1)
 
 
     def trainning(self, epoch, learning_tax, inputs, outputs):
@@ -92,6 +98,9 @@ class MLP(object):
                     # Valores de entrada para os neuronios da camada de saida
                     inputs_out.append(inp.output)
 
+                for k in range(len(self.neurons_in)):
+                    self.dot.node("input"+str(k+1),"Input:"+ str(k) + "\nValue:" + str(inputs[i][k]))
+
                 for oup in self.neurons_out:
                     # Modifica os valores de entrada para os neuronios da camada de saida
                     oup.input = copy.deepcopy(inputs_out)
@@ -104,12 +113,11 @@ class MLP(object):
                 if not self.error():
                     self.update_weights(outputs[i], learning_tax)
 
-        #     print("Epoca " + str(j))
-        #     for oup in self.neurons_out:
-        #         print (oup.output)
-        # print("Final:")
-        # for oup in self.neurons_out:
-        #     print (oup.output)
+                # Renderiza a arvore de decisao
+                self.dot.render(view=True, cleanup=True)
+
+                time.sleep(1)
+
 
     def test(self, inputs, outputs):
         for i in range(len(inputs)):
