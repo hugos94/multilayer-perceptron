@@ -42,7 +42,7 @@ class MLP(object):
             self.neurons_in.append(Neuron(weights, theta))
 
             # Cria a estrutura do neuronio da camada escondida no grafo
-            self.dot.node("hidden_layer"+str(i+1), "Neuron:"+str(i+1) + "\nValue:" + str(0))
+            self.dot.node("hidden_layer"+str(i+1), "Neuron:"+str(i+1) + "\Sum:" + str(0))
 
 
         # Criando neuronios da camada de saida
@@ -56,7 +56,7 @@ class MLP(object):
             self.neurons_out.append(Neuron(weights, theta))
 
             # Cria a estrutura do neuronio da camada de saida do grafo
-            self.dot.node("out_layer"+str(i+1), "Neuron:"+str(i+1) + "\nValue:" + str(0))
+            self.dot.node("out_layer"+str(i+1), "Neuron:"+str(i+1) + "\nSum:" + str(0))
 
         # Cria o no de saida n grafo
         self.dot.node("out","out")
@@ -86,6 +86,10 @@ class MLP(object):
         #     print (oup.output)
         for j in range(epoch+1):
             for i in range(len(inputs)):
+
+                self.dot = Digraph(format='png')
+                self.dot.body.extend(['rankdir=LR', 'size="8,5"'])
+
                 inputs_out = []
 
                 # Atualiza as entradas do grafo
@@ -104,7 +108,7 @@ class MLP(object):
 
                 # Atualiza as entradas da camada escondida
                 for k in range(self.architecture[1]):
-                    self.dot.node("hidden_layer"+str(k+1),"Neuron:"+ str(k) + "\nValue:" + str(round(self.neurons_in[k].sum_inputs(),3)))
+                    self.dot.node("hidden_layer"+str(k+1),"Neuron:"+ str(k) + "\nSum:" + str(round(self.neurons_in[k].sum_inputs(),3)))
 
                 for oup in self.neurons_out:
                     # Modifica os valores de entrada para os neuronios da camada de saida
@@ -113,19 +117,35 @@ class MLP(object):
                     # Recalcula a saida do neuronio com as novas entradas
                     oup.recalculate_output()
 
+                # Atualiza as entradas da camada de saida
                 for k in range(self.architecture[2]):
-                    self.dot.node("out_layer"+str(k+1),"Neuron:"+ str(k) + "\nValue:" + str(round(self.neurons_out[k].sum_inputs(),3)))
+                    self.dot.node("out_layer"+str(k+1),"Neuron:"+ str(k) + "\nSum:" + str(round(self.neurons_out[k].sum_inputs(),3)))
 
+                # Cria as ligacoes entre as entradas e a camada escondida
+                for l in range(self.architecture[0]):
+                    for m in range(self.architecture[1]):
+                        self.dot.edge("input"+str(l+1),"hidden_layer"+str(m+1), label="\t\t" + str(round(self.neurons_in[m].weight[l],3)) + "\t\t")
+
+                # Cria as ligacoes entre a camada escondida e a camada de saida
+                for l in range(self.architecture[1]):
+                    for m in range(self.architecture[2]):
+                        self.dot.edge("hidden_layer"+str(l+1),"out_layer"+str(m+1), label="\t\t" + str(round(self.neurons_out[m].weight[l],3)) + "\t\t")
+
+                # Cria as ligacoes entre a camada de saida e a saida final
+                for k in range(self.architecture[2]):
+                    self.dot.edge("out_layer"+(str(k+1)), "out", label="\t\t" +str(round(self.neurons_out[k].output,3)) + "\t\t")
+
+                # Renderiza a arvore de decisao
+                self.dot.render(view=True, cleanup=True)
+
+                time.sleep(1)
 
                 #""" TESTAR SE SAIDA EH IGUAL A ESPERADA """
                 # Calcula o erro
                 if not self.error():
                     self.update_weights(outputs[i], learning_tax)
 
-                # Renderiza a arvore de decisao
-                self.dot.render(view=True, cleanup=True)
-
-                time.sleep(1)
+        #self.dot.render(view=True, cleanup=True)
 
 
     def test(self, inputs, outputs):
