@@ -184,11 +184,12 @@ class Application(tk.Frame):
         """ Funcao que treina o algoritmo do Multilayer Perceptron. """
 
         if self.box.get():
+
             # Remove a lista de atributos do arquivo
             attributes = Matrix.extract_attributes(self.file_content_trainning)
 
             # Seleciona quantidade de linhas a serem utilizadas
-            self.file_content_trainning = Matrix.get_rows_matrix(self.file_content_trainning, 0, int(self.box.get))
+            self.file_content_trainning = Matrix.get_rows_matrix(self.file_content_trainning, 0, int(self.box.get())-1)
 
             # Devolve colunas com as entradas
             inputs = Matrix.remove_columns_2(self.file_content_trainning, [4,5,6])

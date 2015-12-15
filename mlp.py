@@ -89,8 +89,10 @@ class MLP(object):
     def trainning(self, epoch, learning_tax, inputs, outputs):
         # for oup in self.neurons_out:
         #     print (oup.output)
-        for j in range(epoch+1):
+        count = 0
+        for j in range(epoch):
             for i in range(len(inputs)):
+                count+=1
 
                 self.dot = Digraph(format='png')
                 self.dot.body.extend(['rankdir=LR', 'size="8,5"'])
@@ -158,7 +160,7 @@ class MLP(object):
                     self.update_weights(outputs[i], learning_tax)
 
         #self.dot.render(view=True, cleanup=True)
-
+        print (count)
 
     def test(self, inputs, outputs):
         for i in range(len(inputs)):
