@@ -227,9 +227,18 @@ class Application(tk.Frame):
                 window_trainning.title("Multilayer Perceptron Trainning")
                 window_trainning.grid()
 
-                mlp = MLP(window_trainning)
+                self.label_epoch = StringVar()
+                self.label_epoch.set(" Epoca: 0 ")
+                tk.Label(window_trainning,textvariable=self.label_epoch).grid(column=1,row=0)
+                tk.Button(window_trainning, text=" Executar epoca! ").grid(column=1,row=1)
 
-                mlp.trainning(int(self.epoch.get()), float(self.learning_tax.get()), inputs, outputs)
+                mlp = MLP(window_trainning)
+                
+                epoch = int(self.epoch.get())
+                for j in range(epoch): # Iteracao em epocas
+                    self.label_epoch.set(" Epoca: " + str(j+1) + "  Restantes: " + str(epoch-j-1))
+                    mlp.trainning(float(self.learning_tax.get()), inputs, outputs)
+
             else:
                 # Mensagem de erro gerada quando tentamos executar o algoritmo novamente
                 tk.messagebox.showwarning("Carregar o arquivo de treinamento novamente", "Para executar, necessario carregar o arquivo de treinamento novamente.")
