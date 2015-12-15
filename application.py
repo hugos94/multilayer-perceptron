@@ -15,6 +15,9 @@ from matrix import *
 class Application(tk.Frame):
     """docstring for Application"""
 
+    global counter
+    counter = 0
+
 
     def __init__(self, master=None):
         """Classe que implementa a interface grafica da aplicacao Multilayer Perceptron"""
@@ -77,6 +80,8 @@ class Application(tk.Frame):
     def open_file_trainning(self):
         """Abre um File Dialog que retorna o nome do arquivo de treinamento"""
 
+        global counter
+
         # Abre o FileDialog e recebe o nome do arquivo escolhido
         filename = filedialog.askopenfilename(**self.file_opt)
         name = os.path.split(filename)[1]
@@ -91,6 +96,9 @@ class Application(tk.Frame):
 
             # Chama o metodo para criar a combobox
             self.create_combo_box()
+
+            # Variavel que controla a execucao
+            counter = 0
 
     def create_combo_box(self):
         """Cria a combobox para a escolha da quantidade de linhas do arquivo de treinamento a serem utilizadas."""
@@ -183,31 +191,40 @@ class Application(tk.Frame):
     def trainning_mlp(self):
         """ Funcao que treina o algoritmo do Multilayer Perceptron. """
 
+        global counter
+
         if self.box.get():
+            if counter == 0:
 
-            # Remove a lista de atributos do arquivo
-            attributes = Matrix.extract_attributes(self.file_content_trainning)
+                # Colocar o contador em 1 para evitar que o programa execute novamente
+                counter = 1
 
-            # Seleciona quantidade de linhas a serem utilizadas
-            self.file_content_trainning = Matrix.get_rows_matrix(self.file_content_trainning, 0, int(self.box.get())-1)
+                # Remove a lista de atributos do arquivo
+                attributes = Matrix.extract_attributes(self.file_content_trainning)
 
-            # Devolve colunas com as entradas
-            inputs = Matrix.remove_columns_2(self.file_content_trainning, [4,5,6])
+                # Seleciona quantidade de linhas a serem utilizadas
+                self.file_content_trainning = Matrix.get_rows_matrix(self.file_content_trainning, 0, int(self.box.get())-1)
 
-            # Devolve colunas com as saidas esperadas
-            outputs = Matrix.remove_columns_2(self.file_content_trainning, [0,1,2,3])
+                # Devolve colunas com as entradas
+                inputs = Matrix.remove_columns_2(self.file_content_trainning, [4,5,6])
 
-            # Converte elementos das matrizes em float
-            inputs = Matrix.to_float(inputs)
-            outputs = Matrix.to_float(outputs)
+                # Devolve colunas com as saidas esperadas
+                outputs = Matrix.remove_columns_2(self.file_content_trainning, [0,1,2,3])
 
-            # Imprime matriz a ser utilizada
-            print("Matriz de entrada: ", end='')
-            Matrix.print_matrix(inputs)
+                # Converte elementos das matrizes em float
+                inputs = Matrix.to_float(inputs)
+                outputs = Matrix.to_float(outputs)
 
-            mlp = MLP()
+                # Imprime matriz a ser utilizada
+                print("Matriz de entrada: ", end='')
+                Matrix.print_matrix(inputs)
 
-            mlp.trainning(int(self.epoch.get()), float(self.learning_tax.get()), inputs, outputs)
+                mlp = MLP()
+
+                mlp.trainning(int(self.epoch.get()), float(self.learning_tax.get()), inputs, outputs)
+            else:
+            # Mensagem de erro gerada quando tentamos executar o algoritmo novamente
+            tk.messagebox.showwarning("Carregar o arquivo de treinamento novamente", "Para executar, necessario carregar o arquivo de treinamento novamente.")
         else:
             # Mensagem de erro gerada quando tentamos executar o algoritmo sem escolher o atributo classe
             tk.messagebox.showwarning("Quantidade de elementos de treinamento nao escolhido", "Escolha a quantidade para continuar!")
