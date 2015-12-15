@@ -131,63 +131,58 @@ class MLP(object):
                 # Recalcula a saida do neuronio com as novas entradas
                 oup.recalculate_output()
 
-            '''Criacao do grafo do MLP'''
+        '''Criacao do grafo do MLP'''
 
-            self.dot = Digraph(format='png')
-            self.dot.body.extend(['rankdir=LR', 'size="8,5"'])
+        self.dot = Digraph(format='png')
+        self.dot.body.extend(['rankdir=LR', 'size="8,5"'])
 
-            # Atualiza as entradas do grafo
-            for k in range(self.architecture[0]):
-                self.dot.node("input"+str(k+1),"Input:"+ str(k) + "\nValue:" + str(inputs[i][k]))
+        # Atualiza as entradas do grafo
+        for k in range(self.architecture[0]):
+            self.dot.node("input"+str(k+1),"Input:"+ str(k) + "\nValue:" + str(inputs[i][k]))
 
-            # Atualiza as entradas da camada escondida
-            for k in range(self.architecture[1]):
-                self.dot.node("hidden_layer"+str(k+1),"Neuron:"+ str(k) + "\nSum:" + str(round(self.neurons_in[k].sum_inputs(),3)))
+        # Atualiza as entradas da camada escondida
+        for k in range(self.architecture[1]):
+            self.dot.node("hidden_layer"+str(k+1),"Neuron:"+ str(k) + "\nSum:" + str(round(self.neurons_in[k].sum_inputs(),3)))
 
-            # Atualiza as entradas da camada de saida
-            for k in range(self.architecture[2]):
-                self.dot.node("out_layer"+str(k+1),"Neuron:"+ str(k) + "\nSum:" + str(round(self.neurons_out[k].sum_inputs(),3)))
+        # Atualiza as entradas da camada de saida
+        for k in range(self.architecture[2]):
+            self.dot.node("out_layer"+str(k+1),"Neuron:"+ str(k) + "\nSum:" + str(round(self.neurons_out[k].sum_inputs(),3)))
 
-            # Cria as ligacoes entre as entradas e a camada escondida
-            for k in range(self.architecture[0]):
-                for l in range(self.architecture[1]):
-                    self.dot.edge("input"+str(k+1),"hidden_layer"+str(l+1), label="\t\t" + str(round(self.neurons_in[l].weight[k],3)) + "\t\t")
+        # Cria as ligacoes entre as entradas e a camada escondida
+        for k in range(self.architecture[0]):
+            for l in range(self.architecture[1]):
+                self.dot.edge("input"+str(k+1),"hidden_layer"+str(l+1), label="\t\t" + str(round(self.neurons_in[l].weight[k],3)) + "\t\t")
 
-            # Cria as ligacoes entre a camada escondida e a camada de saida
-            for k in range(self.architecture[1]):
-                for l in range(self.architecture[2]):
-                    self.dot.edge("hidden_layer"+str(k+1),"out_layer"+str(l+1), label="\t\t" + str(round(self.neurons_out[l].weight[k],3)) + "\t\t")
+        # Cria as ligacoes entre a camada escondida e a camada de saida
+        for k in range(self.architecture[1]):
+            for l in range(self.architecture[2]):
+                self.dot.edge("hidden_layer"+str(k+1),"out_layer"+str(l+1), label="\t\t" + str(round(self.neurons_out[l].weight[k],3)) + "\t\t")
 
-            # Cria a label que será mostrada no nó de saida
-            label_out=""
-            for k in range(self.architecture[2]):
-                label_out += "Saida:" + str(k) + "\tValue:" + str(round(self.neurons_out[k].output,3)) + "\n"
-                self.dot.edge("out_layer"+(str(k+1)), "out", label="")
+        # Cria a label que será mostrada no nó de saida
+        label_out=""
+        for k in range(self.architecture[2]):
+            label_out += "Saida:" + str(k) + "\tValue:" + str(round(self.neurons_out[k].output,3)) + "\n"
+            self.dot.edge("out_layer"+(str(k+1)), "out", label="")
 
-            # Cria o no de saida n grafo
-            self.dot.node("out",label_out)
+        # Cria o no de saida n grafo
+        self.dot.node("out",label_out)
 
-            # Renderiza a arvore de decisao
-            #self.dot.render(view=True, cleanup=True)
+        '''Fim da criacao do grafo'''
 
-            #time.sleep(1)
+        #""" TESTAR SE SAIDA EH IGUAL A ESPERADA """
+        # Calcula o erro
+        if not self.error():
+            self.update_weights(outputs[i], learning_tax)
 
-            '''Fim da criacao do grafo'''
+        self.dot.render(view=False, cleanup=True)
 
-            #""" TESTAR SE SAIDA EH IGUAL A ESPERADA """
-            # Calcula o erro
-            if not self.error():
-                self.update_weights(outputs[i], learning_tax)
+        # Carrega a imagem
+        imagem = ImageTk.PhotoImage(Image.open("Digraph.gv.png").convert("RGB"))
 
-            self.dot.render(view=False, cleanup=True)
-
-            # Carrega a imagem
-            imagem = ImageTk.PhotoImage(Image.open("Digraph.gv.png").convert("RGB"))
-
-            # Cria uma label que ira conter a imagem da arvore de decisao
-            label = tk.Label(self.window, image=imagem)
-            label.image = imagem
-            label.grid(column=1,row=2)
+        # Cria uma label que ira conter a imagem da arvore de decisao
+        label = tk.Label(self.window, image=imagem)
+        label.image = imagem
+        label.grid(column=1,row=2)
 
     def test(self, inputs, outputs):
         for i in range(len(inputs)):
