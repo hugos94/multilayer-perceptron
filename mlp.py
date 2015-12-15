@@ -8,18 +8,19 @@ import copy
 import time
 
 class MLP(object):
-
+    ''' MLP e a classe responsavel por treinar e testar um Multilayer Perceptron. '''
 
     def __init__(self, architecture=[4, 4, 3]):
+        ''' Inicializa a arquitetura da rede neural. '''
 
         self.architecture = architecture
+
+        self.neurons_in = []    # Neuronios da camada escondida
+        self.neurons_out = []   # Neuronios da camada de saida
 
         # Cria a estrutura do MLP
         self.dot = Digraph(format='png')
         self.dot.body.extend(['rankdir=LR', 'size="8,5"'])
-
-        self.neurons_in = []    # Neuronios da camada escondida
-        self.neurons_out = []   # Neuronios da camada de saida
 
         # Alterando o tipo de no para cubo
         self.dot.attr('node', shape='box')
@@ -43,7 +44,6 @@ class MLP(object):
 
             # Cria a estrutura do neuronio da camada escondida no grafo
             self.dot.node("hidden_layer"+str(i+1), "Neuron:"+str(i+1) + "\nSum:" + str(0))
-
 
         # Criando neuronios da camada de saida
         for i in range(architecture[2]):
@@ -83,19 +83,17 @@ class MLP(object):
         # Renderiza a arvore de decisao
         self.dot.render(view=True, cleanup=True)
 
+        # Pausa a execucao por 1 segundo
         time.sleep(1)
 
 
     def trainning(self, epoch, learning_tax, inputs, outputs):
-        # for oup in self.neurons_out:
-        #     print (oup.output)
-        count = 0
-        for j in range(epoch):
-            for i in range(len(inputs)):
-                count+=1
+        ''' Metodo que treina a rede neural de multiplas camadas. '''
+
+        for j in range(epoch): # Iteracao em epocas
+            for i in range(len(inputs)): # Iteracao em entradas
 
                 inputs_out = []
-
                 for inp in self.neurons_in:
                     # Modifica os valores de entrada para os neuronios da camada escondida
                     inp.input = copy.deepcopy(inputs[i])
@@ -117,6 +115,7 @@ class MLP(object):
 
                 self.dot = Digraph(format='png')
                 self.dot.body.extend(['rankdir=LR', 'size="8,5"'])
+
                 # Atualiza as entradas do grafo
                 for k in range(self.architecture[0]):
                     self.dot.node("input"+str(k+1),"Input:"+ str(k) + "\nValue:" + str(inputs[i][k]))
@@ -130,14 +129,14 @@ class MLP(object):
                     self.dot.node("out_layer"+str(k+1),"Neuron:"+ str(k) + "\nSum:" + str(round(self.neurons_out[k].sum_inputs(),3)))
 
                 # Cria as ligacoes entre as entradas e a camada escondida
-                for l in range(self.architecture[0]):
-                    for m in range(self.architecture[1]):
-                        self.dot.edge("input"+str(l+1),"hidden_layer"+str(m+1), label="\t\t" + str(round(self.neurons_in[m].weight[l],3)) + "\t\t")
+                for k in range(self.architecture[0]):
+                    for l in range(self.architecture[1]):
+                        self.dot.edge("input"+str(k+1),"hidden_layer"+str(l+1), label="\t\t" + str(round(self.neurons_in[l].weight[k],3)) + "\t\t")
 
                 # Cria as ligacoes entre a camada escondida e a camada de saida
-                for l in range(self.architecture[1]):
-                    for m in range(self.architecture[2]):
-                        self.dot.edge("hidden_layer"+str(l+1),"out_layer"+str(m+1), label="\t\t" + str(round(self.neurons_out[m].weight[l],3)) + "\t\t")
+                for k in range(self.architecture[1]):
+                    for l in range(self.architecture[2]):
+                        self.dot.edge("hidden_layer"+str(k+1),"out_layer"+str(l+1), label="\t\t" + str(round(self.neurons_out[l].weight[k],3)) + "\t\t")
 
                 # Cria a label que será mostrada no nó de saida
                 label_out=""
@@ -161,7 +160,6 @@ class MLP(object):
                     self.update_weights(outputs[i], learning_tax)
 
         self.dot.render(view=True, cleanup=True)
-        print (count)
 
     def test(self, inputs, outputs):
         for i in range(len(inputs)):
@@ -191,6 +189,7 @@ class MLP(object):
 
 
     def update_weights(self, outputs, n):
+        ''' Metodo que atualiza os pesos da rede neural de multiplas camadas. '''
         out_error = []
         in_error = []
 
