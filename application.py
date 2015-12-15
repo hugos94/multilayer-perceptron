@@ -190,6 +190,7 @@ class Application(tk.Frame):
         except AttributeError:
             tk.messagebox.showwarning("Arquivo de treinamento nao informado", "Informe o arquivo de treinamento para continuar!")
 
+
     def trainning_mlp(self):
         """ Funcao que treina o algoritmo do Multilayer Perceptron. """
 
@@ -221,7 +222,9 @@ class Application(tk.Frame):
                 print("Matriz de entrada: ", end='')
                 Matrix.print_matrix(inputs)
 
+                # Cria a sub janela que ira controlar a execucao do treinamento
                 window = tk.Toplevel(self)
+                window.grid()
 
                 mlp = MLP(window)
 

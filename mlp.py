@@ -92,13 +92,28 @@ class MLP(object):
 
         self.dot.render(view=False, cleanup=False)
 
+        self.label_input = StringVar()
+        self.label_input.set(" Entrada: 0 ")
+        tk.Label(self.window,textvariable=self.label_input).grid(column=0,row=0)
+        tk.Button(self.window, text=" Executar Entrada! ").grid(column=0,row=1)
+
+        self.label_epoch = StringVar()
+        self.label_epoch.set(" Epoca: 0 ")
+        tk.Label(self.window,textvariable=self.label_epoch).grid(column=1,row=0)
+        tk.Button(self.window, text=" Executar epoca! ").grid(column=1,row=1)
+
+        self.label_exec = StringVar()
+        self.label_exec.set(" Execucoes restantes: Indefinido! ")
+        tk.Label(self.window,textvariable=self.label_exec).grid(column=2,row=0)
+        tk.Button(self.window, text=" Executar completo? ").grid(column=2,row=1)
+
         # Carrega a imagem
         imagem = ImageTk.PhotoImage(Image.open("Digraph.gv.png").convert("RGB"))
 
         # Cria uma label que ira conter a imagem da arvore de decisao
         label = tk.Label(self.window, image=imagem)
         label.image = imagem
-        label.grid()
+        label.grid(column=1,row=2)
 
 
     def trainning(self, epoch, learning_tax, inputs, outputs):
