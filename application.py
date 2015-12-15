@@ -52,8 +52,14 @@ class Application(tk.Frame):
         # Cria o botao para inserir a taxa de aprendizagem do treinamento
         tk.Button(self, text="Taxa de Aprendizagem", command=self.get_learning_tax).grid(column=2,row=0)
 
-        # Cria o botao para criar a arquitetura do MLP
-        tk.Button(self, text="Arquitetura", command=self.set_architecture).grid(column=3,row=0)
+        # Cria o botao para criar a arquitetura do MLP dinamica
+        #tk.Button(self, text="Arquitetura", command=self.set_architecture).grid(column=3,row=0)
+
+        # Cria o botao apenas como label para a arquitetura estatica do MLP
+        tk.Button(self, text="Arquitetura", state=tk.DISABLED).grid(column=3,row=0)
+
+        # Label que mostra a arquitetura utilizada ( estático )
+        tk.Label(self,text="4-4-3").grid(column=3,row=1)
 
         # Cria o botao para treinar o MLP
         tk.Button(self, text='Treinar Rede Neural...', command=self.verify_trainning_mlp).grid(column = 4, row = 0)
@@ -63,6 +69,9 @@ class Application(tk.Frame):
 
         # Cria o botao para testar o MLP
         tk.Button(self, text='Testar Rede Neural...', command=self.test_mlp).grid(column = 6, row = 0)
+
+         # Inicializa a combobox como nulo
+        self.box = None
 
 
     def open_file_trainning(self):
@@ -79,6 +88,18 @@ class Application(tk.Frame):
             self.file_content_trainning = fm.read_csv(filename)
             # Cria a label com o nome do arquivo carregado
             tk.Label(self, text=name).grid(column=0,row=1)
+
+            # Chama o metodo para criar a combobox
+            self.create_combo_box()
+
+    def create_combo_box(self):
+        """Cria a combobox para a escolha da quantidade de linhas do arquivo de treinamento a serem utilizadas."""
+        value = StringVar()
+        self.box = ttk.Combobox(self, textvariable=value, state='readonly')
+        self.box['values'] = list(range(1,len(self.file_content_trainning)-1))
+        if self.box['values']:
+            self.box.current(0)
+        self.box.grid(column = 0, row = 2)
 
 
     def open_file_test(self):
@@ -143,45 +164,6 @@ class Application(tk.Frame):
             tk.messagebox.showwarning("Taxa de Aprendizagem nao informada", "Informe taxa de aprendizagem para continuar!")
 
 
-    def set_architecture(self):
-        """ Cria uma nova janela pra inserir a arquitetura do MLP. """
-
-        self.window = tk.Toplevel(self)
-        self.window.title("Arquitetura do MLP!")
-        self.window.grid
-
-        tk.Label(self.window, text="Informe a quantidade de entradas:").grid(column=0,row=0)
-        self.in_layer = StringVar()
-        tk.Entry(self.window,width=20, textvariable=self.in_layer).grid(column=1,row=0)
-
-        tk.Label(self.window, text="Informe a quantidade de neuronios na camada escondida:").grid(column=0,row=1)
-        self.hidden_layer = StringVar()
-        tk.Entry(self.window,width=20, textvariable=self.hidden_layer).grid(column=1,row=1)
-
-        tk.Label(self.window, text="Informe a quantidade de neuronios na camada de saida:").grid(column=0,row=2)
-        self.out_layer = StringVar()
-        tk.Entry(self.window,width=20, textvariable=self.out_layer).grid(column=1,row=2)
-
-        tk.Button(self.window,text="Salvar!", command=self.verify_architecture).grid(column=2,row=1)
-
-
-    def verify_architecture(self):
-        """ Metodo que verifica se a arquitetura foi inserida """
-
-        if self.in_layer.get():
-            if self.hidden_layer.get():
-                if self.out_layer.get():
-                    self.architecture_type = self.in_layer.get() + "-" + self.hidden_layer.get() + "-" + self.out_layer.get()
-                    tk.Label(self,text=self.architecture_type).grid(column=3,row=1)
-                    self.window.destroy()
-                else:
-                    tk.messagebox.showwarning("Numero de neuronios na camada de saida nao informado", "Informe o numero de neuronios na camada de saida para continuar!")
-            else:
-                tk.messagebox.showwarning("Numero de neuronios na camada escondida nao informado", "Informe o numero de neuronios na camada escondida para continuar!")
-        else:
-            tk.messagebox.showwarning("Numero de entradas nao informado", "Informe o numero de entradas para continuar!")
-
-
     def verify_trainning_mlp(self):
         """ Verifica se todos os atributos para treinar o MLP foram inseridos. """
         try:
@@ -201,59 +183,33 @@ class Application(tk.Frame):
     def trainning_mlp(self):
         """ Funcao que treina o algoritmo do Multilayer Perceptron. """
 
-        fm = FileManager()
+        if self.box.get():
+            # Remove a lista de atributos do arquivo
+            attributes = Matrix.extract_attributes(self.file_content_trainning)
 
-    	# Le os dados de entrada a partir de um arquivo csv
-        file_content = fm.read_csv(self.file_content_trainning)
+            # Seleciona quantidade de linhas a serem utilizadas
+            self.file_content_trainning = Matrix.get_rows_matrix(self.file_content_trainning, 0, int(self.box.get))
 
-        # Remove a lista de atributos do arquivo
-        attributes = Matrix.extract_attributes(file_content)
+            # Devolve colunas com as entradas
+            inputs = Matrix.remove_columns_2(self.file_content_trainning, [4,5,6])
 
-        # Seleciona quantidade de linhas a serem utilizadas
-        file_content = Matrix.get_rows_matrix(file_content, 0, 5)
+            # Devolve colunas com as saidas esperadas
+            outputs = Matrix.remove_columns_2(self.file_content_trainning, [0,1,2,3])
 
-        # Devolve colunas com as entradas
-        inputs = Matrix.remove_columns_2(file_content, [4,5,6])
+            # Converte elementos das matrizes em float
+            inputs = Matrix.to_float(inputs)
+            outputs = Matrix.to_float(outputs)
 
-        # Devolve colunas com as saidas esperadas
-        outputs = Matrix.remove_columns_2(file_content, [0,1,2,3])
+            # Imprime matriz a ser utilizada
+            print("Matriz de entrada: ", end='')
+            Matrix.print_matrix(inputs)
 
-        # Converte elementos das matrizes em float
-        inputs = Matrix.to_float(inputs)
-        outputs = Matrix.to_float(outputs)
+            mlp = MLP()
 
-        # Imprime matriz a ser utilizada
-        print("Matriz de entrada: ", end='')
-        Matrix.print_matrix(inputs)
-
-        e = epoch
-
-        while e > 0:   #""" (DO WHILE) OU ESTA NA FAIXA DE ERRO ACEITO """
-            e -= 1
-
-            for i,line in enumerate(inputs):
-                if e == (epoch - 1) and i == 0:
-                    # Utiliza primeira linha das entradas como inicializacao do MLP
-                    mlp = MLP(inputs[i])
-                else:
-                    # Executa a rede MLP
-                    mlp.execute(line)
-
-                #""" TESTAR SE SAIDA EH IGUAL A ESPERADA """
-                # Calcula o erro
-                if not mlp.error():
-                    mlp.update_weights(outputs[i], n)
-
-                if e == 0:
-                    print("---: NEURONIO", i, ":---")
-                    for neu in mlp.neurons_out:
-                        print(neu.output)
-                    print()
-
-                    # for i,inp in enumerate(mlp.neurons_in):
-                    #     print("Neuronio da escondida (", i, ")\n", inp)
-                    # for o,out in enumerate(mlp.neurons_out):
-                    #     print("Neuronios de saida (", o, ")\n", out)
+            mlp.trainning(int(self.epoch.get()), float(self.learning_tax.get()), inputs, outputs)
+        else:
+            # Mensagem de erro gerada quando tentamos executar o algoritmo sem escolher o atributo classe
+            tk.messagebox.showwarning("Quantidade de elementos de treinamento nao escolhido", "Escolha a quantidade para continuar!")
 
 
 
@@ -268,3 +224,45 @@ if __name__ == '__main__':
     root = tk.Tk()
     app = Application(master=root)
     app.mainloop()
+
+'''
+# Metodos que adicionam a funcionalidade de escolher a arquitetura dinamicamente
+
+# def set_architecture(self):
+#     """ Cria uma nova janela pra inserir a arquitetura do MLP. """
+#
+#     self.window = tk.Toplevel(self)
+#     self.window.title("Arquitetura do MLP!")
+#     self.window.grid
+#
+#     tk.Label(self.window, text="Informe a quantidade de entradas:").grid(column=0,row=0)
+#     self.in_layer = StringVar()
+#     tk.Entry(self.window,width=20, textvariable=self.in_layer).grid(column=1,row=0)
+#
+#     tk.Label(self.window, text="Informe a quantidade de neuronios na camada escondida:").grid(column=0,row=1)
+#     self.hidden_layer = StringVar()
+#     tk.Entry(self.window,width=20, textvariable=self.hidden_layer).grid(column=1,row=1)
+#
+#     tk.Label(self.window, text="Informe a quantidade de neuronios na camada de saida:").grid(column=0,row=2)
+#     self.out_layer = StringVar()
+#     tk.Entry(self.window,width=20, textvariable=self.out_layer).grid(column=1,row=2)
+#
+#     tk.Button(self.window,text="Salvar!", command=self.verify_architecture).grid(column=2,row=1)
+
+# def verify_architecture(self):
+#     """ Metodo que verifica se a arquitetura foi inserida """
+#
+#     if self.in_layer.get():
+#         if self.hidden_layer.get():
+#             if self.out_layer.get():
+#                 self.architecture_type = self.in_layer.get() + "-" + self.hidden_layer.get() + "-" + self.out_layer.get()
+#                 tk.Label(self,text=self.architecture_type).grid(column=3,row=1)
+#                 self.window.destroy()
+#             else:
+#                 tk.messagebox.showwarning("Numero de neuronios na camada de saida nao informado", "Informe o numero de neuronios na camada de saida para continuar!")
+#         else:
+#             tk.messagebox.showwarning("Numero de neuronios na camada escondida nao informado", "Informe o numero de neuronios na camada escondida para continuar!")
+#     else:
+#         tk.messagebox.showwarning("Numero de entradas nao informado", "Informe o numero de entradas para continuar!")
+#
+'''

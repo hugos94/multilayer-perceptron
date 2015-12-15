@@ -42,7 +42,7 @@ class MLP(object):
             self.neurons_in.append(Neuron(weights, theta))
 
             # Cria a estrutura do neuronio da camada escondida no grafo
-            self.dot.node("hidden_layer"+str(i+1), "Neuron:"+str(i+1) + "\Sum:" + str(0))
+            self.dot.node("hidden_layer"+str(i+1), "Neuron:"+str(i+1) + "\nSum:" + str(0))
 
 
         # Criando neuronios da camada de saida
@@ -58,9 +58,6 @@ class MLP(object):
             # Cria a estrutura do neuronio da camada de saida do grafo
             self.dot.node("out_layer"+str(i+1), "Neuron:"+str(i+1) + "\nSum:" + str(0))
 
-        # Cria o no de saida n grafo
-        self.dot.node("out","out")
-
         # Cria as ligacoes entre as entradas e a camada escondida
         for i in range(architecture[0]):
             for j in range(architecture[1]):
@@ -71,9 +68,17 @@ class MLP(object):
             for j in range(architecture[2]):
                 self.dot.edge("hidden_layer"+str(i+1),"out_layer"+str(j+1), label="\t\t" + str(round(self.neurons_out[j].weight[i],3)) + "\t\t")
 
+        # Cria a label que será mostrada no nó de saida
+        label_out=""
+        for i in range(architecture[2]):
+            label_out += "Saida:" + str(i) + "\tValue:" + str(round(self.neurons_out[i].output,3)) + "\n"
+
+        # Cria o no de saida n grafo
+        self.dot.node("out",label_out)
+
         # Cria as ligacoes entre a camada de saida e a saida final
         for i in range(architecture[2]):
-            self.dot.edge("out_layer"+(str(i+1)), "out", label="\t\t" +str(self.neurons_out[i].output) + "\t\t")
+            self.dot.edge("out_layer"+(str(i+1)), "out", label="\t\t" +str(round(self.neurons_out[i].weight[0],3)) + "\t\t")
 
         # Renderiza a arvore de decisao
         self.dot.render(view=True, cleanup=True)
@@ -131,10 +136,17 @@ class MLP(object):
                     for m in range(self.architecture[2]):
                         self.dot.edge("hidden_layer"+str(l+1),"out_layer"+str(m+1), label="\t\t" + str(round(self.neurons_out[m].weight[l],3)) + "\t\t")
 
+                # Cria a label que será mostrada no nó de saida
+                label_out=""
+                for k in range(self.architecture[2]):
+                    label_out += "Saida:" + str(k) + "\tValue:" + str(round(self.neurons_out[k].output,3)) + "\n"
+
+                # Cria o no de saida n grafo
+                self.dot.node("out",label_out)
+
                 # Cria as ligacoes entre a camada de saida e a saida final
                 for k in range(self.architecture[2]):
-                    self.dot.edge("out_layer"+(str(k+1)), "out", label="\t\t" +str(round(self.neurons_out[k].output,3)) + "\t\t")
-
+                    self.dot.edge("out_layer"+(str(k+1)), "out", label="\t\t" +str(round(self.neurons_out[k].weight[0],3)) + "\t\t")
                 # Renderiza a arvore de decisao
                 self.dot.render(view=True, cleanup=True)
 
