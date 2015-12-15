@@ -209,27 +209,36 @@ class Application(tk.Frame):
                 self.file_content_trainning = Matrix.get_rows_matrix(self.file_content_trainning, 0, int(self.box.get())-1)
 
                 # Devolve colunas com as entradas
-                inputs = Matrix.remove_columns_2(self.file_content_trainning, [4,5,6])
+                self.inputs = Matrix.remove_columns_2(self.file_content_trainning, [4,5,6])
 
                 # Devolve colunas com as saidas esperadas
-                outputs = Matrix.remove_columns_2(self.file_content_trainning, [0,1,2,3])
+                self.outputs = Matrix.remove_columns_2(self.file_content_trainning, [0,1,2,3])
 
                 # Converte elementos das matrizes em float
-                inputs = Matrix.to_float(inputs)
-                outputs = Matrix.to_float(outputs)
+                self.inputs = Matrix.to_float(self.inputs)
+                self.outputs = Matrix.to_float(self.outputs)
 
                 # Imprime matriz a ser utilizada
                 print("Matriz de entrada: ", end='')
-                Matrix.print_matrix(inputs)
+                Matrix.print_matrix(self.inputs)
 
                 # Cria a sub janela que ira controlar a execucao do treinamento
                 window_trainning = tk.Toplevel(self)
                 window_trainning.title("Multilayer Perceptron Trainning")
                 window_trainning.grid()
 
-                mlp = MLP(window_trainning)
+                self.label_epoch = StringVar()
+                self.label_epoch.set(" Epoca: 0 ")
+                tk.Label(window_trainning,textvariable=self.label_epoch).grid(column=1,row=0)
+                tk.Button(window_trainning, text=" Executar epoca! ", command=self.execute_by_epoch).grid(column=1,row=1)
 
-                mlp.trainning(int(self.epoch.get()), float(self.learning_tax.get()), inputs, outputs)
+                tk.Button(window_trainning, text=" Executar completo? ", command=self.execute_all_epoch).grid(column=2,row=1)
+
+                self.mlp = MLP(window_trainning)
+
+                self.epoch = int(self.epoch.get())
+                self.epoch_counter = 0
+
             else:
                 # Mensagem de erro gerada quando tentamos executar o algoritmo novamente
                 tk.messagebox.showwarning("Carregar o arquivo de treinamento novamente", "Para executar, necessario carregar o arquivo de treinamento novamente.")
@@ -237,6 +246,19 @@ class Application(tk.Frame):
             # Mensagem de erro gerada quando tentamos executar o algoritmo sem escolher o atributo classe
             tk.messagebox.showwarning("Quantidade de elementos de treinamento nao escolhido", "Escolha a quantidade para continuar!")
 
+
+    def execute_by_epoch(self):
+        if (self.epoch_counter < self.epoch):
+            self.epoch_counter += 1
+            self.label_epoch.set(" Epoca: " + str(self.epoch_counter) + "  Restantes: " + str(self.epoch-self.epoch_counter))
+            self.mlp.trainning(float(self.learning_tax.get()), self.inputs, self.outputs)
+
+
+    def execute_all_epoch(self):
+        while (self.epoch_counter < self.epoch):
+            self.epoch_counter += 1
+            self.label_epoch.set(" Epoca: " + str(self.epoch_counter) + "  Restantes: " + str(self.epoch-self.epoch_counter))
+            self.mlp.trainning(float(self.learning_tax.get()), self.inputs, self.outputs)
 
 
     def test_mlp(self):
