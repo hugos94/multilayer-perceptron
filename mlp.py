@@ -232,7 +232,7 @@ class MLP(object):
 
         # Calculando o erro da camada de saida
         for i in range(len(self.neurons_out)):
-            out_error.append(math.fabs(outputs[i] - self.neurons_out[i].output))
+            out_error.append(math.pow((outputs[i] - self.neurons_out[i].output),2.0)/2.0)
 
         # Calculando o erro da camada escondida
         for i in range(len(self.neurons_in)):
