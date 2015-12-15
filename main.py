@@ -38,9 +38,34 @@ def main():
 
     mlp = MLP()
 
+    # Treinamento da Rede Neural
     mlp.trainning(epoch, learning_tax, inputs, outputs)
 
-    #mlp.test(inputs, outputs)
+    # Le os dados de entrada a partir de um arquivo csv
+    file_content = fm.read_csv("Teste.csv")
+
+    # Remove a lista de atributos do arquivo
+    attributes = Matrix.extract_attributes(file_content)
+
+    # Seleciona quantidade de linhas a serem utilizadas
+    file_content = Matrix.get_rows_matrix(file_content, 0, 17)
+
+    # Devolve colunas com as entradas
+    inputs = Matrix.remove_columns_2(file_content, [4,5,6])
+
+    # Devolve colunas com as saidas esperadas
+    outputs = Matrix.remove_columns_2(file_content, [0,1,2,3])
+
+    # Converte elementos das matrizes em float
+    inputs = Matrix.to_float(inputs)
+    outputs = Matrix.to_float(outputs)
+
+    # Imprime matriz a ser utilizada
+    print("Matriz de entrada: ", end='')
+    Matrix.print_matrix(inputs)
+
+    # Teste da Rede Neural
+    mlp.test(inputs, outputs)
 
 if __name__ == '__main__':
     main()
