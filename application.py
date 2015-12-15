@@ -129,6 +129,9 @@ class Application(tk.Frame):
             # Cria a label com o nome do arquivo carregado
             tk.Label(self, text=name).grid(column=5,row=1)
 
+            self.test_flag = 0
+
+
 
     def get_epoch(self):
         """ Cria uma nova janela pra receber a quantidade de epocas para o treinamento. """
@@ -280,11 +283,26 @@ class Application(tk.Frame):
 
     def test_mlp(self):
         """ Funcao que testa o algoritmo do Multilayer Perceptron. """
-        self.window_test = tk.Toplevel(self)
-        self.window_test.title("Teste do Multilayer Perceptron!")
-        self.window_test.grid
-        #print(self.file_content_testing)
-        pass
+        try:
+            if(self.execute_flag == 1):
+                try:
+                    if self.file_content_testing:
+                        try:
+                            if (self.test_flag == 0):
+                                self.test_flag = 1
+                                self.window_test = tk.Toplevel(self)
+                                self.window_test.title("Teste do Multilayer Perceptron!")
+                                self.window_test.grid
+                            else:
+                                tk.messagebox.showwarning("Arquivo de teste ja utilizado!", "Informe o arquivo de teste novamente para continuar!")
+                        except AttributeError:
+                            tk.messagebox.showwarning("Arquivo de teste ja utilizado!", "Informe o arquivo de teste novamente para continuar!")
+                except AttributeError:
+                    tk.messagebox.showwarning("Arquivo de teste nao informado", "Informe o arquivo de teste para continuar!")
+            else:
+                tk.messagebox.showwarning("A rede Neural nao foi treinada!", "Treine a Rede Neural para continuar.")
+        except AttributeError:
+            tk.messagebox.showwarning("A rede Neural nao foi treinada!", "Treine a Rede Neural para continuar.")
 
 
 if __name__ == '__main__':
