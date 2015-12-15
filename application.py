@@ -223,8 +223,8 @@ class Application(tk.Frame):
 
                 mlp.trainning(int(self.epoch.get()), float(self.learning_tax.get()), inputs, outputs)
             else:
-            # Mensagem de erro gerada quando tentamos executar o algoritmo novamente
-            tk.messagebox.showwarning("Carregar o arquivo de treinamento novamente", "Para executar, necessario carregar o arquivo de treinamento novamente.")
+                # Mensagem de erro gerada quando tentamos executar o algoritmo novamente
+                tk.messagebox.showwarning("Carregar o arquivo de treinamento novamente", "Para executar, necessario carregar o arquivo de treinamento novamente.")
         else:
             # Mensagem de erro gerada quando tentamos executar o algoritmo sem escolher o atributo classe
             tk.messagebox.showwarning("Quantidade de elementos de treinamento nao escolhido", "Escolha a quantidade para continuar!")
