@@ -280,7 +280,9 @@ class Application(tk.Frame):
 
     def test_mlp(self):
         """ Funcao que testa o algoritmo do Multilayer Perceptron. """
-
+        self.window_test = tk.Toplevel(self)
+        self.window_test.title("Teste do Multilayer Perceptron!")
+        self.window_test.grid
         #print(self.file_content_testing)
         pass
 
