@@ -12,6 +12,8 @@ import copy
 from mlp import *
 from matrix import *
 
+from PIL import Image, ImageTk
+
 class Application(tk.Frame):
     """docstring for Application"""
 
@@ -219,7 +221,9 @@ class Application(tk.Frame):
                 print("Matriz de entrada: ", end='')
                 Matrix.print_matrix(inputs)
 
-                mlp = MLP()
+                window = tk.Toplevel(self)
+
+                mlp = MLP(window)
 
                 mlp.trainning(int(self.epoch.get()), float(self.learning_tax.get()), inputs, outputs)
             else:

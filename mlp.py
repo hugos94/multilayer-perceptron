@@ -1,19 +1,29 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import tkinter as tk
+import tkinter.ttk as ttk
+from tkinter import filedialog
+from tkinter import StringVar
+from tkinter import messagebox
+
 from graphviz import Digraph
+
 from neuron import *
 import random
 import copy
 import time
 
+from PIL import Image, ImageTk
+
 class MLP(object):
     ''' MLP e a classe responsavel por treinar e testar um Multilayer Perceptron. '''
 
-    def __init__(self, architecture=[4, 4, 3]):
+    def __init__(self, window, architecture=[4, 4, 3]):
         ''' Inicializa a arquitetura da rede neural. '''
 
         self.architecture = architecture
+        self.window = window
 
         self.neurons_in = []    # Neuronios da camada escondida
         self.neurons_out = []   # Neuronios da camada de saida
@@ -80,11 +90,15 @@ class MLP(object):
         for i in range(architecture[2]):
             self.dot.edge("out_layer"+(str(i+1)), "out", label="")
 
-        # Renderiza a arvore de decisao
-        self.dot.render(view=True, cleanup=True)
+        self.dot.render(view=False, cleanup=False)
 
-        # Pausa a execucao por 1 segundo
-        time.sleep(1)
+        # Carrega a imagem
+        imagem = ImageTk.PhotoImage(Image.open("Digraph.gv.png").convert("RGB"))
+
+        # Cria uma label que ira conter a imagem da arvore de decisao
+        label = tk.Label(self.window, image=imagem)
+        label.image = imagem
+        label.grid()
 
 
     def trainning(self, epoch, learning_tax, inputs, outputs):
