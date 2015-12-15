@@ -97,8 +97,6 @@ class MLP(object):
         tk.Label(self.window,textvariable=self.label_input).grid(column=0,row=0)
         tk.Button(self.window, text=" Executar entrada! ").grid(column=0,row=1)
 
-        tk.Button(self.window, text=" Executar completo? ").grid(column=2,row=1)
-
         # Carrega a imagem
         imagem = ImageTk.PhotoImage(Image.open("Digraph.gv.png").convert("RGB"))
 
