@@ -223,10 +223,11 @@ class Application(tk.Frame):
                 Matrix.print_matrix(inputs)
 
                 # Cria a sub janela que ira controlar a execucao do treinamento
-                window = tk.Toplevel(self)
-                window.grid()
+                window_trainning = tk.Toplevel(self)
+                window_trainning.title("Multilayer Perceptron Trainning")
+                window_trainning.grid()
 
-                mlp = MLP(window)
+                mlp = MLP(window_trainning)
 
                 mlp.trainning(int(self.epoch.get()), float(self.learning_tax.get()), inputs, outputs)
             else:

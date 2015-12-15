@@ -95,16 +95,14 @@ class MLP(object):
         self.label_input = StringVar()
         self.label_input.set(" Entrada: 0 ")
         tk.Label(self.window,textvariable=self.label_input).grid(column=0,row=0)
-        tk.Button(self.window, text=" Executar Entrada! ").grid(column=0,row=1)
+        tk.Button(self.window, text=" Executar entrada! ").grid(column=0,row=1)
 
         self.label_epoch = StringVar()
         self.label_epoch.set(" Epoca: 0 ")
         tk.Label(self.window,textvariable=self.label_epoch).grid(column=1,row=0)
         tk.Button(self.window, text=" Executar epoca! ").grid(column=1,row=1)
 
-        self.label_exec = StringVar()
-        self.label_exec.set(" Execucoes restantes: Indefinido! ")
-        tk.Label(self.window,textvariable=self.label_exec).grid(column=2,row=0)
+
         tk.Button(self.window, text=" Executar completo? ").grid(column=2,row=1)
 
         # Carrega a imagem
@@ -118,9 +116,11 @@ class MLP(object):
 
     def trainning(self, epoch, learning_tax, inputs, outputs):
         ''' Metodo que treina a rede neural de multiplas camadas. '''
-
+        tam_inputs = len(inputs)
         for j in range(epoch): # Iteracao em epocas
-            for i in range(len(inputs)): # Iteracao em entradas
+            self.label_epoch.set(" Epoca: " + str(j+1) + "  Restantes: " + str(epoch-j-1))
+            for i in range(tam_inputs): # Iteracao em entradas
+                self.label_input.set(" Entrada: " + str(i+1) + "  Restantes: " + str(tam_inputs-i-1))
 
                 inputs_out = []
                 for inp in self.neurons_in:
@@ -188,7 +188,15 @@ class MLP(object):
                 if not self.error():
                     self.update_weights(outputs[i], learning_tax)
 
-        self.dot.render(view=True, cleanup=True)
+        self.dot.render(view=False, cleanup=True)
+
+        # Carrega a imagem
+        imagem = ImageTk.PhotoImage(Image.open("Digraph.gv.png").convert("RGB"))
+
+        # Cria uma label que ira conter a imagem da arvore de decisao
+        label = tk.Label(self.window, image=imagem)
+        label.image = imagem
+        label.grid(column=1,row=2)
 
     def test(self, inputs, outputs):
         for i in range(len(inputs)):
