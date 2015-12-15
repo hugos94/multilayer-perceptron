@@ -40,12 +40,11 @@ class Neuron(object):
         beta = 1.0
         potencial = self.sum_inputs() - self.theta
 
-        e_1 = math.exp((-1.0 * beta * potencial) - 1.0)  # e^-1(x)
-        out = beta * potencial * e_1
+        e =  2.718281828459045235360287     # Euler value
+        e_bu = math.pow(e, (beta * potencial))  # e^bu
 
-        e_2 = math.exp(-1.0 * beta * potencial)  # e^-1(x)
-        out = out / math.pow((1.0 + e_2), 2.0)
-
+        out = (beta * e_bu) / math.pow((e_bu + 1), 2)
+        print(out)
         return out
 
 
