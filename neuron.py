@@ -40,11 +40,10 @@ class Neuron(object):
         beta = 1.0
         potencial = self.sum_inputs() - self.theta
 
-        e_1 = math.exp((-1.0 * beta * potencial) - 1.0)  # e^-1(x)
-        out = beta * potencial * e_1
+        e =  2.718281828459045235360287     # Euler value
+        e_bu = math.pow(e, (beta * potencial))  # e^bu
 
-        e_2 = math.exp(-1.0 * beta * potencial)  # e^-1(x)
-        out = out / math.pow((1.0 + e_2), 2.0)
+        out = (beta * e_bu) / math.pow((e_bu + 1), 2)
 
         return out
 
@@ -52,11 +51,11 @@ class Neuron(object):
     def sum_inputs(self):
         """ Calcula o somatorio das entradas * pesos """
 
-        sum = 0
+        count = 0
         for i in range(len(self.input)):
-            sum += self.input[i] * self.weight[i]
+            count += self.input[i] * self.weight[i]
 
-        return sum
+        return count
 
     def recalculate_output(self):
         """ Recalcula o valor de saida do neuronio """
