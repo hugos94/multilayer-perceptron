@@ -102,6 +102,8 @@ class Application(tk.Frame):
             # Variavel que controla a execucao
             counter = 0
 
+            tk.Label(self, text="").grid(column=4,row=1)
+
     def create_combo_box(self):
         """Cria a combobox para a escolha da quantidade de linhas do arquivo de treinamento a serem utilizadas."""
         value = StringVar()
@@ -228,16 +230,19 @@ class Application(tk.Frame):
                 window_trainning.grid()
 
                 self.label_epoch = StringVar()
-                self.label_epoch.set(" Epoca: 0 ")
-                tk.Label(window_trainning,textvariable=self.label_epoch).grid(column=1,row=0)
-                tk.Button(window_trainning, text=" Executar epoca! ", command=self.execute_by_epoch).grid(column=1,row=1)
+                self.label_epoch.set(" Epoca: 0  Restantes: " + str(self.epoch.get()))
+                tk.Label(window_trainning,textvariable=self.label_epoch).grid(column=0,row=0)
+                self.button_epoch = tk.Button(window_trainning, text=" Executar por epoca? ", command=self.trainning_by_epoch)
+                self.button_epoch.grid(column=0,row=1)
 
-                tk.Button(window_trainning, text=" Executar completo? ", command=self.execute_all_epoch).grid(column=2,row=1)
+                self.button_all = tk.Button(window_trainning, text=" Executar completamente? ", command=self.trainning_all_epoch)
+                self.button_all.grid(column=0,row=2)
 
                 self.mlp = MLP(window_trainning)
 
                 self.epoch = int(self.epoch.get())
                 self.epoch_counter = 0
+                self.execute_flag = 0
 
             else:
                 # Mensagem de erro gerada quando tentamos executar o algoritmo novamente
@@ -247,18 +252,27 @@ class Application(tk.Frame):
             tk.messagebox.showwarning("Quantidade de elementos de treinamento nao escolhido", "Escolha a quantidade para continuar!")
 
 
-    def execute_by_epoch(self):
+    def trainning_by_epoch(self):
         if (self.epoch_counter < self.epoch):
             self.epoch_counter += 1
             self.label_epoch.set(" Epoca: " + str(self.epoch_counter) + "  Restantes: " + str(self.epoch-self.epoch_counter))
             self.mlp.trainning(float(self.learning_tax.get()), self.inputs, self.outputs)
+        else:
+            self.execute_flag = 1
+            self.button_epoch.config(state=tk.DISABLED)
+            self.button_all.config(state=tk.DISABLED)
+            tk.Label(self, text="Rede Treinada!").grid(column=4,row=1)
 
 
-    def execute_all_epoch(self):
+    def trainning_all_epoch(self):
         while (self.epoch_counter < self.epoch):
             self.epoch_counter += 1
             self.label_epoch.set(" Epoca: " + str(self.epoch_counter) + "  Restantes: " + str(self.epoch-self.epoch_counter))
             self.mlp.trainning(float(self.learning_tax.get()), self.inputs, self.outputs)
+        self.execute_flag = 1
+        self.button_epoch.config(state=tk.DISABLED)
+        self.button_all.config(state=tk.DISABLED)
+        tk.Label(self, text="Rede Treinada!").grid(column=4,row=1)
 
 
     def test_mlp(self):

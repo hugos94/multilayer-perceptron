@@ -78,6 +78,8 @@ class MLP(object):
             for j in range(architecture[2]):
                 self.dot.edge("hidden_layer"+str(i+1),"out_layer"+str(j+1), label="\t\t" + str(round(self.neurons_out[j].weight[i],3)) + "\t\t")
 
+        # Alterando o tipo de no para cubo
+        self.dot.attr('node', shape='box')
         # Cria a label que será mostrada no nó de saida
         label_out=""
         for i in range(architecture[2]):
@@ -92,18 +94,13 @@ class MLP(object):
 
         self.dot.render(view=False, cleanup=False)
 
-        self.label_input = StringVar()
-        self.label_input.set(" Entrada: 0 ")
-        tk.Label(self.window,textvariable=self.label_input).grid(column=0,row=0)
-        tk.Button(self.window, text=" Executar entrada! ").grid(column=0,row=1)
-
         # Carrega a imagem
         imagem = ImageTk.PhotoImage(Image.open("Digraph.gv.png").convert("RGB"))
 
         # Cria uma label que ira conter a imagem da arvore de decisao
         label = tk.Label(self.window, image=imagem)
         label.image = imagem
-        label.grid(column=1,row=2)
+        label.grid(column=0,row=3)
 
 
     def trainning(self, learning_tax, inputs, outputs):
@@ -111,7 +108,6 @@ class MLP(object):
 
         tam_inputs = len(inputs)
         for i in range(tam_inputs): # Iteracao em entradas
-            self.label_input.set(" Entrada: " + str(i+1) + "  Restantes: " + str(tam_inputs-i-1))
 
             inputs_out = []
             for inp in self.neurons_in:
@@ -131,15 +127,24 @@ class MLP(object):
                 # Recalcula a saida do neuronio com as novas entradas
                 oup.recalculate_output()
 
+        #""" TESTAR SE SAIDA EH IGUAL A ESPERADA """
+        # Calcula o erro
+        if not self.error():
+            self.update_weights(outputs[i], learning_tax)
+
         '''Criacao do grafo do MLP'''
 
         self.dot = Digraph(format='png')
         self.dot.body.extend(['rankdir=LR', 'size="8,5"'])
 
+        # Alterando o tipo de no para cubo
+        self.dot.attr('node', shape='box')
         # Atualiza as entradas do grafo
         for k in range(self.architecture[0]):
             self.dot.node("input"+str(k+1),"Input:"+ str(k) + "\nValue:" + str(inputs[i][k]))
 
+        # Alterando o tipo de no para cubo
+        self.dot.attr('node', shape='circle')
         # Atualiza as entradas da camada escondida
         for k in range(self.architecture[1]):
             self.dot.node("hidden_layer"+str(k+1),"Neuron:"+ str(k) + "\nSum:" + str(round(self.neurons_in[k].sum_inputs(),3)))
@@ -158,6 +163,9 @@ class MLP(object):
             for l in range(self.architecture[2]):
                 self.dot.edge("hidden_layer"+str(k+1),"out_layer"+str(l+1), label="\t\t" + str(round(self.neurons_out[l].weight[k],3)) + "\t\t")
 
+        # Alterando o tipo de no para cubo
+        self.dot.attr('node', shape='box')
+        
         # Cria a label que será mostrada no nó de saida
         label_out=""
         for k in range(self.architecture[2]):
@@ -169,11 +177,6 @@ class MLP(object):
 
         '''Fim da criacao do grafo'''
 
-        #""" TESTAR SE SAIDA EH IGUAL A ESPERADA """
-        # Calcula o erro
-        if not self.error():
-            self.update_weights(outputs[i], learning_tax)
-
         self.dot.render(view=False, cleanup=True)
 
         # Carrega a imagem
@@ -182,7 +185,8 @@ class MLP(object):
         # Cria uma label que ira conter a imagem da arvore de decisao
         label = tk.Label(self.window, image=imagem)
         label.image = imagem
-        label.grid(column=1,row=2)
+        label.grid(column=0,row=3)
+
 
     def test(self, inputs, outputs):
         for i in range(len(inputs)):
