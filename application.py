@@ -108,7 +108,7 @@ class Application(tk.Frame):
         """Cria a combobox para a escolha da quantidade de linhas do arquivo de treinamento a serem utilizadas."""
         value = StringVar()
         self.box = ttk.Combobox(self, textvariable=value, state='readonly')
-        self.box['values'] = list(range(1,len(self.file_content_trainning)-1))
+        self.box['values'] = list(range(1,len(self.file_content_trainning)))
         if self.box['values']:
             self.box.current(0)
         self.box.grid(column = 0, row = 2)
@@ -256,7 +256,7 @@ class Application(tk.Frame):
         if (self.epoch_counter < self.epoch):
             self.epoch_counter += 1
             self.label_epoch.set(" Epoca: " + str(self.epoch_counter) + "  Restantes: " + str(self.epoch-self.epoch_counter))
-            self.mlp.trainning(float(self.learning_tax.get()), self.inputs, self.outputs)
+            self.mlp.trainning(float(self.learning_tax.get()), self.inputs, self.outputs, 0, 0)
         else:
             self.execute_flag = 1
             self.button_epoch.config(state=tk.DISABLED)
@@ -265,10 +265,13 @@ class Application(tk.Frame):
 
 
     def trainning_all_epoch(self):
+        flag = 0
         while (self.epoch_counter < self.epoch):
             self.epoch_counter += 1
             self.label_epoch.set(" Epoca: " + str(self.epoch_counter) + "  Restantes: " + str(self.epoch-self.epoch_counter))
-            self.mlp.trainning(float(self.learning_tax.get()), self.inputs, self.outputs)
+            if(self.epoch_counter == self.epoch):
+                flag = 1
+            self.mlp.trainning(float(self.learning_tax.get()), self.inputs, self.outputs, 1, flag)
         self.execute_flag = 1
         self.button_epoch.config(state=tk.DISABLED)
         self.button_all.config(state=tk.DISABLED)

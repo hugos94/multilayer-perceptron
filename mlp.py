@@ -103,7 +103,7 @@ class MLP(object):
         label.grid(column=0,row=3)
 
 
-    def trainning(self, learning_tax, inputs, outputs):
+    def trainning(self, learning_tax, inputs, outputs, by_epoch, flag):
         ''' Metodo que treina a rede neural de multiplas camadas. '''
 
         tam_inputs = len(inputs)
@@ -132,60 +132,61 @@ class MLP(object):
         if not self.error():
             self.update_weights(outputs[i], learning_tax)
 
-        '''Criacao do grafo do MLP'''
+        if (by_epoch == 0 or flag == 1):
+            '''Criacao do grafo do MLP'''
 
-        self.dot = Digraph(format='png')
-        self.dot.body.extend(['rankdir=LR', 'size="8,5"'])
+            self.dot = Digraph(format='png')
+            self.dot.body.extend(['rankdir=LR', 'size="8,5"'])
 
-        # Alterando o tipo de no para cubo
-        self.dot.attr('node', shape='box')
-        # Atualiza as entradas do grafo
-        for k in range(self.architecture[0]):
-            self.dot.node("input"+str(k+1),"Input:"+ str(k) + "\nValue:" + str(inputs[i][k]))
+            # Alterando o tipo de no para cubo
+            self.dot.attr('node', shape='box')
+            # Atualiza as entradas do grafo
+            for k in range(self.architecture[0]):
+                self.dot.node("input"+str(k+1),"Input:"+ str(k) + "\nValue:" + str(inputs[i][k]))
 
-        # Alterando o tipo de no para cubo
-        self.dot.attr('node', shape='circle')
-        # Atualiza as entradas da camada escondida
-        for k in range(self.architecture[1]):
-            self.dot.node("hidden_layer"+str(k+1),"Neuron:"+ str(k) + "\nSum:" + str(round(self.neurons_in[k].sum_inputs(),3)))
+            # Alterando o tipo de no para cubo
+            self.dot.attr('node', shape='circle')
+            # Atualiza as entradas da camada escondida
+            for k in range(self.architecture[1]):
+                self.dot.node("hidden_layer"+str(k+1),"Neuron:"+ str(k) + "\nSum:" + str(round(self.neurons_in[k].sum_inputs(),3)))
 
-        # Atualiza as entradas da camada de saida
-        for k in range(self.architecture[2]):
-            self.dot.node("out_layer"+str(k+1),"Neuron:"+ str(k) + "\nSum:" + str(round(self.neurons_out[k].sum_inputs(),3)))
+            # Atualiza as entradas da camada de saida
+            for k in range(self.architecture[2]):
+                self.dot.node("out_layer"+str(k+1),"Neuron:"+ str(k) + "\nSum:" + str(round(self.neurons_out[k].sum_inputs(),3)))
 
-        # Cria as ligacoes entre as entradas e a camada escondida
-        for k in range(self.architecture[0]):
-            for l in range(self.architecture[1]):
-                self.dot.edge("input"+str(k+1),"hidden_layer"+str(l+1), label="\t\t" + str(round(self.neurons_in[l].weight[k],3)) + "\t\t")
+            # Cria as ligacoes entre as entradas e a camada escondida
+            for k in range(self.architecture[0]):
+                for l in range(self.architecture[1]):
+                    self.dot.edge("input"+str(k+1),"hidden_layer"+str(l+1), label="\t\t" + str(round(self.neurons_in[l].weight[k],3)) + "\t\t")
 
-        # Cria as ligacoes entre a camada escondida e a camada de saida
-        for k in range(self.architecture[1]):
-            for l in range(self.architecture[2]):
-                self.dot.edge("hidden_layer"+str(k+1),"out_layer"+str(l+1), label="\t\t" + str(round(self.neurons_out[l].weight[k],3)) + "\t\t")
+            # Cria as ligacoes entre a camada escondida e a camada de saida
+            for k in range(self.architecture[1]):
+                for l in range(self.architecture[2]):
+                    self.dot.edge("hidden_layer"+str(k+1),"out_layer"+str(l+1), label="\t\t" + str(round(self.neurons_out[l].weight[k],3)) + "\t\t")
 
-        # Alterando o tipo de no para cubo
-        self.dot.attr('node', shape='box')
-        
-        # Cria a label que será mostrada no nó de saida
-        label_out=""
-        for k in range(self.architecture[2]):
-            label_out += "Saida:" + str(k) + "\tValue:" + str(round(self.neurons_out[k].output,3)) + "\n"
-            self.dot.edge("out_layer"+(str(k+1)), "out", label="")
+            # Alterando o tipo de no para cubo
+            self.dot.attr('node', shape='box')
 
-        # Cria o no de saida n grafo
-        self.dot.node("out",label_out)
+            # Cria a label que será mostrada no nó de saida
+            label_out=""
+            for k in range(self.architecture[2]):
+                label_out += "Saida:" + str(k) + "\tValue:" + str(round(self.neurons_out[k].output,3)) + "\n"
+                self.dot.edge("out_layer"+(str(k+1)), "out", label="")
 
-        '''Fim da criacao do grafo'''
+            # Cria o no de saida n grafo
+            self.dot.node("out",label_out)
 
-        self.dot.render(view=False, cleanup=True)
+            self.dot.render(view=False, cleanup=True)
 
-        # Carrega a imagem
-        imagem = ImageTk.PhotoImage(Image.open("Digraph.gv.png").convert("RGB"))
+            # Carrega a imagem
+            imagem = ImageTk.PhotoImage(Image.open("Digraph.gv.png").convert("RGB"))
 
-        # Cria uma label que ira conter a imagem da arvore de decisao
-        label = tk.Label(self.window, image=imagem)
-        label.image = imagem
-        label.grid(column=0,row=3)
+            # Cria uma label que ira conter a imagem da arvore de decisao
+            label = tk.Label(self.window, image=imagem)
+            label.image = imagem
+            label.grid(column=0,row=3)
+
+            '''Fim da criacao do grafo'''
 
 
     def test(self, inputs, outputs):
