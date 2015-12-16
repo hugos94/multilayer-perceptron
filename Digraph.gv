@@ -1,0 +1,64 @@
+digraph {
+rankdir=LR
+size="8,5"
+	node [shape=box]
+	input1 [label="Input:0
+Value:0"]
+	input2 [label="Input:1
+Value:0"]
+	input3 [label="Input:2
+Value:0"]
+	input4 [label="Input:3
+Value:0"]
+	node [shape=circle]
+	hidden_layer1 [label="Neuron:1
+Sum:0"]
+	hidden_layer2 [label="Neuron:2
+Sum:0"]
+	hidden_layer3 [label="Neuron:3
+Sum:0"]
+	hidden_layer4 [label="Neuron:4
+Sum:0"]
+	out_layer1 [label="Neuron:1
+Sum:0"]
+	out_layer2 [label="Neuron:2
+Sum:0"]
+	out_layer3 [label="Neuron:3
+Sum:0"]
+		input1 -> hidden_layer1 [label="		0.714		"]
+		input1 -> hidden_layer2 [label="		0.861		"]
+		input1 -> hidden_layer3 [label="		0.352		"]
+		input1 -> hidden_layer4 [label="		0.916		"]
+		input2 -> hidden_layer1 [label="		0.271		"]
+		input2 -> hidden_layer2 [label="		0.12		"]
+		input2 -> hidden_layer3 [label="		0.432		"]
+		input2 -> hidden_layer4 [label="		0.08		"]
+		input3 -> hidden_layer1 [label="		0.404		"]
+		input3 -> hidden_layer2 [label="		0.761		"]
+		input3 -> hidden_layer3 [label="		0.798		"]
+		input3 -> hidden_layer4 [label="		0.448		"]
+		input4 -> hidden_layer1 [label="		0.732		"]
+		input4 -> hidden_layer2 [label="		0.373		"]
+		input4 -> hidden_layer3 [label="		0.628		"]
+		input4 -> hidden_layer4 [label="		0.146		"]
+		hidden_layer1 -> out_layer1 [label="		0.79		"]
+		hidden_layer1 -> out_layer2 [label="		0.192		"]
+		hidden_layer1 -> out_layer3 [label="		0.372		"]
+		hidden_layer2 -> out_layer1 [label="		0.267		"]
+		hidden_layer2 -> out_layer2 [label="		0.671		"]
+		hidden_layer2 -> out_layer3 [label="		0.231		"]
+		hidden_layer3 -> out_layer1 [label="		0.618		"]
+		hidden_layer3 -> out_layer2 [label="		0.32		"]
+		hidden_layer3 -> out_layer3 [label="		0.437		"]
+		hidden_layer4 -> out_layer1 [label="		0.083		"]
+		hidden_layer4 -> out_layer2 [label="		0.829		"]
+		hidden_layer4 -> out_layer3 [label="		0.108		"]
+	node [shape=box]
+	out [label="Saida:0	Value:0.0
+Saida:1	Value:0.0
+Saida:2	Value:0.0
+"]
+		out_layer1 -> out [label=""]
+		out_layer2 -> out [label=""]
+		out_layer3 -> out [label=""]
+}

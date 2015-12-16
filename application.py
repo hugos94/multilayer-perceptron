@@ -49,31 +49,46 @@ class Application(tk.Frame):
         """Funcao que cria os botoes no Frame"""
 
         # Cria o botao para abrir o arquivo de treinamento
-        tk.Button(self, text='Abrir Arquivo de Treinamento...', command=self.open_file_trainning).grid(column = 0, row = 0)
+        tk.Button(self, text='Arquivo de Treinamento', command=self.open_file_trainning).grid(column = 0, row = 0)
 
         # Cria o botao para inserir a quantidade de epocas do treinamento
         tk.Button(self, text="Quantidade de Épocas", command=self.get_epoch).grid(column=1,row=0)
 
+        self.epoch = StringVar()
+        self.epoch.set("2500");
+        tk.Label(self,textvariable=self.epoch).grid(column=1,row=1)
+
         # Cria o botao para inserir a taxa de aprendizagem do treinamento
         tk.Button(self, text="Taxa de Aprendizagem", command=self.get_learning_tax).grid(column=2,row=0)
+
+        self.learning_tax = StringVar()
+        self.learning_tax.set("0.5")
+        tk.Label(self,textvariable=self.learning_tax).grid(column=2,row=1)
 
         # Cria o botao para criar a arquitetura do MLP dinamica
         #tk.Button(self, text="Arquitetura", command=self.set_architecture).grid(column=3,row=0)
 
+        # Cria o botao para inserir a precisa do treinamento
+        tk.Button(self, text="Precisão", command=self.get_precision_tax).grid(column=3,row=0)
+
+        self.precision_tax = StringVar()
+        self.precision_tax.set("0.05")
+        tk.Label(self,textvariable=self.precision_tax).grid(column=3,row=1)
+
         # Cria o botao apenas como label para a arquitetura estatica do MLP
-        tk.Button(self, text="Arquitetura", state=tk.DISABLED).grid(column=3,row=0)
+        tk.Button(self, text="Arquitetura", state=tk.DISABLED).grid(column=4,row=0)
 
         # Label que mostra a arquitetura utilizada ( estático )
-        tk.Label(self,text="4-4-3").grid(column=3,row=1)
+        tk.Label(self,text="4-4-3").grid(column=4,row=1)
 
         # Cria o botao para treinar o MLP
-        tk.Button(self, text='Treinar Rede Neural...', command=self.verify_trainning_mlp).grid(column = 4, row = 0)
+        tk.Button(self, text='Treinar Rede', command=self.verify_trainning_mlp).grid(column = 5, row = 0)
 
         # Cria o botao para abrir o arquivo de teste
-        tk.Button(self, text='Abrir Arquivo de Teste...', command=self.open_file_test).grid(column = 5, row = 0)
+        tk.Button(self, text='Arquivo de Teste', command=self.open_file_test).grid(column = 6, row = 0)
 
         # Cria o botao para testar o MLP
-        tk.Button(self, text='Testar Rede Neural...', command=self.test_mlp).grid(column = 6, row = 0)
+        tk.Button(self, text='Testar Rede', command=self.test_mlp).grid(column = 7, row = 0)
 
          # Inicializa a combobox como nulo
         self.box = None
@@ -102,7 +117,8 @@ class Application(tk.Frame):
             # Variavel que controla a execucao
             counter = 0
 
-            tk.Label(self, text="").grid(column=4,row=1)
+            tk.Label(self, text="").grid(column=5,row=1)
+
 
     def create_combo_box(self):
         """Cria a combobox para a escolha da quantidade de linhas do arquivo de treinamento a serem utilizadas."""
@@ -127,10 +143,9 @@ class Application(tk.Frame):
             # Le os dados de entrada a partir de um arquivo csv
             self.file_content_testing = fm.read_csv(filename)
             # Cria a label com o nome do arquivo carregado
-            tk.Label(self, text=name).grid(column=5,row=1)
+            tk.Label(self, text=name).grid(column=7,row=1)
 
             self.test_flag = 0
-
 
 
     def get_epoch(self):
@@ -141,7 +156,6 @@ class Application(tk.Frame):
         self.window.grid
 
         tk.Label(self.window, text="Informe a quantidade de épocas:").grid(column=0,row=0)
-        self.epoch = StringVar()
         tk.Entry(self.window,width=20, textvariable=self.epoch).grid(column=1,row=0)
         tk.Button(self.window,text="Salvar!", command=self.verify_entry_epoch).grid(column=2,row=0)
 
@@ -150,7 +164,6 @@ class Application(tk.Frame):
         """ Metodo que verifica se a quantidade de epocas foi inserida. """
 
         if self.epoch.get():
-            tk.Label(self,text=self.epoch.get()).grid(column=1,row=1)
             self.window.destroy()
         else:
             tk.messagebox.showwarning("Quantidade de epocas nao informada", "Informe a quantidade de epocas para continuar!")
@@ -164,7 +177,6 @@ class Application(tk.Frame):
         self.window.grid
 
         tk.Label(self.window, text="Informe a taxa de aprendizagem:").grid(column=0,row=0)
-        self.learning_tax = StringVar()
         tk.Entry(self.window,width=20, textvariable=self.learning_tax).grid(column=1,row=0)
         tk.Button(self.window,text="Salvar!", command=self.verify_entry_learning_tax).grid(column=2,row=0)
 
@@ -173,10 +185,30 @@ class Application(tk.Frame):
         """ Metodo que verifica se a taxa de aprendizagem foi inserida. """
 
         if self.learning_tax.get():
-            tk.Label(self,text=self.learning_tax.get()).grid(column=2,row=1)
             self.window.destroy()
         else:
             tk.messagebox.showwarning("Taxa de Aprendizagem nao informada", "Informe taxa de aprendizagem para continuar!")
+
+
+    def get_precision_tax(self):
+        """ Cria uma nova janela pra receber a taxa de precisao para o treinamento. """
+
+        self.window = tk.Toplevel(self)
+        self.window.title("Taxa de Precisão!")
+        self.window.grid()
+
+        tk.Label(self.window, text="Informe a taxa de precisão:").grid(column=0,row=0)
+        tk.Entry(self.window,width=20, textvariable=self.precision_tax).grid(column=1,row=0)
+        tk.Button(self.window,text="Salvar!", command=self.verify_entry_precision_tax).grid(column=2,row=0)
+
+
+    def verify_entry_precision_tax(self):
+        """ Metodo que verifica se a taxa de precision foi inserida. """
+
+        if self.precision_tax.get():
+            self.window.destroy()
+        else:
+            tk.messagebox.showwarning("Taxa de precisao nao informada", "Informe taxa de precisao para continuar!")
 
 
     def verify_trainning_mlp(self):
@@ -187,7 +219,11 @@ class Application(tk.Frame):
                     if self.epoch.get():
                         try:
                             if self.learning_tax.get():
-                                self.trainning_mlp()
+                                try:
+                                    if self.epoch.get():
+                                        self.trainning_mlp()
+                                except AttributeError:
+                                    tk.messagebox.showwarning("Taxa de Precisao nao informada", "Informe a taxa de precisao para continuar!")
                         except AttributeError:
                             tk.messagebox.showwarning("Taxa de Aprendizagem nao informada", "Informe a taxa de aprendizagem para continuar!")
                 except AttributeError:
@@ -241,7 +277,7 @@ class Application(tk.Frame):
                 self.button_all = tk.Button(window_trainning, text=" Executar completamente? ", command=self.trainning_all_epoch)
                 self.button_all.grid(column=0,row=2)
 
-                self.mlp = MLP(window_trainning)
+                self.mlp = MLP(window_trainning,float(self.precision_tax.get()))
 
                 self.epoch = int(self.epoch.get())
                 self.epoch_counter = 0
