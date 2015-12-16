@@ -72,7 +72,7 @@ class Application(tk.Frame):
         tk.Button(self, text="Precisão", command=self.get_precision_tax).grid(column=3,row=0)
 
         self.precision_tax = StringVar()
-        self.precision_tax.set("0.05")
+        self.precision_tax.set("0.0000001")
         tk.Label(self,textvariable=self.precision_tax).grid(column=3,row=1)
 
         # Cria o botao apenas como label para a arquitetura estatica do MLP
@@ -220,7 +220,7 @@ class Application(tk.Frame):
                         try:
                             if self.learning_tax.get():
                                 try:
-                                    if self.epoch.get():
+                                    if self.precision_tax.get():
                                         self.trainning_mlp()
                                 except AttributeError:
                                     tk.messagebox.showwarning("Taxa de Precisao nao informada", "Informe a taxa de precisao para continuar!")
@@ -292,7 +292,7 @@ class Application(tk.Frame):
 
 
     def trainning_by_epoch(self):
-        if (self.epoch_counter < self.epoch):
+        if (not self.mlp.stop_trainning() and self.epoch_counter < self.epoch):
             self.epoch_counter += 1
             self.label_epoch.set(" Epoca: " + str(self.epoch_counter) + "  Restantes: " + str(self.epoch-self.epoch_counter))
             self.mlp.trainning(float(self.learning_tax.get()), self.inputs, self.outputs, 0, 0)
@@ -305,7 +305,7 @@ class Application(tk.Frame):
 
     def trainning_all_epoch(self):
         flag = 0
-        while (self.epoch_counter < self.epoch):
+        while (not self.mlp.stop_trainning() and self.epoch_counter < self.epoch):
             self.epoch_counter += 1
             self.label_epoch.set(" Epoca: " + str(self.epoch_counter) + "  Restantes: " + str(self.epoch-self.epoch_counter))
             if(self.epoch_counter == self.epoch):

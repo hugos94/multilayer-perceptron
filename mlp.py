@@ -19,7 +19,7 @@ from PIL import Image, ImageTk
 class MLP(object):
     ''' MLP e a classe responsavel por treinar e testar um Multilayer Perceptron. '''
 
-    def __init__(self, window, architecture=[4, 4, 3], precision):
+    def __init__(self, window, precision, architecture=[4, 4, 3]):
         ''' Inicializa a arquitetura da rede neural. '''
 
         self.architecture = architecture
@@ -27,7 +27,7 @@ class MLP(object):
 
         self.mean_error = 0.0       # Erro quadratico medio
         self.precision = precision  # Taxa de erro aceitavel
-
+        
         self.stop_flag = False      # Flag que informa se o erro ja e aceitavel
 
         self.neurons_in = []        # Neuronios da camada escondida
@@ -138,7 +138,14 @@ class MLP(object):
 
         self.update_weights(outputs[i], learning_tax)
 
-        if (by_epoch == 0 or flag == 1):
+        # Atualiza erro atual e zera erro medio
+        self.mean_error = self.mean_error / tam_inputs
+        current_error = self.mean_error
+
+        if math.fabs(current_error - previous_error) <= self.precision:
+            self.stop_flag = True
+
+        if (by_epoch == 0 or flag == 1 or self.stop_flag == True):
             '''Criacao do grafo do MLP'''
 
             self.dot = Digraph(format='png')
@@ -193,12 +200,6 @@ class MLP(object):
             label.grid(column=0,row=3)
 
             '''Fim da criacao do grafo'''
-
-        # Atualiza erro atual e zera erro medio
-        current_error = self.mean_error / tam_inputs
-
-        if math.fabs(current_error - previous_error) <= self.precision:
-            self.stop_flag = True
 
 
     def test(self, inputs, outputs):
@@ -267,5 +268,5 @@ class MLP(object):
                 self.neurons_out[i].weight[j] = wei + (n * out_error[i] * out.calculate_derived_sigmoid() * out.input[j])
 
 
-    def stop(self):
+    def stop_trainning(self):
         return self.stop_flag
