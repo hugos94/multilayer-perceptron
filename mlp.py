@@ -146,9 +146,9 @@ class MLP(object):
             self.stop_flag = True
 
         if (by_epoch == 0 or flag == 1 or self.stop_flag == True):
-            self.create_graph(inputs[i])
+            self.create_graph(self.window, inputs[i])
 
-    def create_graph(self, inputs):
+    def create_graph(self, window, inputs):
         '''Criacao do grafo do MLP'''
 
         self.dot = Digraph(format='png')
@@ -198,7 +198,7 @@ class MLP(object):
         imagem = ImageTk.PhotoImage(Image.open("Digraph.gv.png").convert("RGB"))
 
         # Cria uma label que ira conter a imagem da arvore de decisao
-        label = tk.Label(self.window, image=imagem)
+        label = tk.Label(window, image=imagem)
         label.image = imagem
         label.grid(column=0,row=3)
 
@@ -207,7 +207,6 @@ class MLP(object):
 
     def testing(self, inputs, outputs, window_test):
         for i in range(len(inputs)):
-            print("Teste " + str(i))
             inputs_out = []
 
             for inp in self.neurons_in:
