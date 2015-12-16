@@ -19,14 +19,19 @@ from PIL import Image, ImageTk
 class MLP(object):
     ''' MLP e a classe responsavel por treinar e testar um Multilayer Perceptron. '''
 
-    def __init__(self, window, architecture=[4, 4, 3]):
+    def __init__(self, window, architecture=[4, 4, 3], precision):
         ''' Inicializa a arquitetura da rede neural. '''
 
         self.architecture = architecture
         self.window = window
 
-        self.neurons_in = []    # Neuronios da camada escondida
-        self.neurons_out = []   # Neuronios da camada de saida
+        self.mean_error = 0.0       # Erro quadratico medio
+        self.precision = precision  # Taxa de erro aceitavel
+
+        self.stop_flag = False      # Flag que informa se o erro ja e aceitavel
+
+        self.neurons_in = []        # Neuronios da camada escondida
+        self.neurons_out = []       # Neuronios da camada de saida
 
         # Cria a estrutura do MLP
         self.dot = Digraph(format='png')
@@ -106,6 +111,10 @@ class MLP(object):
     def trainning(self, learning_tax, inputs, outputs, by_epoch, flag):
         ''' Metodo que treina a rede neural de multiplas camadas. '''
 
+        # Atualiza erro anterior e zera erro medio
+        previous_error = self.mean_error
+        self.mean_error = 0.0
+
         tam_inputs = len(inputs)
         for i in range(tam_inputs): # Iteracao em entradas
 
@@ -127,10 +136,7 @@ class MLP(object):
                 # Recalcula a saida do neuronio com as novas entradas
                 oup.recalculate_output()
 
-        #""" TESTAR SE SAIDA EH IGUAL A ESPERADA """
-        # Calcula o erro
-        if not self.error():
-            self.update_weights(outputs[i], learning_tax)
+        self.update_weights(outputs[i], learning_tax)
 
         if (by_epoch == 0 or flag == 1):
             '''Criacao do grafo do MLP'''
@@ -188,6 +194,12 @@ class MLP(object):
 
             '''Fim da criacao do grafo'''
 
+        # Atualiza erro atual e zera erro medio
+        current_error = self.mean_error / tam_inputs
+
+        if math.fabs(current_error - previous_error) <= self.precision:
+            self.stop_flag = True
+
 
     def test(self, inputs, outputs):
         for i in range(len(inputs)):
@@ -221,10 +233,16 @@ class MLP(object):
         out_error = []
         in_error = []
 
+        # Variavel auxiliar para calcular o erro medio
+        mean_error_aux = 0.0
+
         # Calculando o erro da camada de saida
         for i, out in enumerate(self.neurons_out):
             out_error.append((outputs[i] - out.output) * out.calculate_derived_sigmoid())
-            #out_error.append(math.pow((outputs[i] - self.neurons_out[i].output), 2.0)/2.0)
+
+            mean_error_aux += math.pow((outputs[i] - out.output), 2.0)
+
+        self.mean_error += mean_error_aux / 2.0
 
         # Calculando o erro da camada escondida
         for i, inp in enumerate(self.neurons_in):
@@ -249,5 +267,5 @@ class MLP(object):
                 self.neurons_out[i].weight[j] = wei + (n * out_error[i] * out.calculate_derived_sigmoid() * out.input[j])
 
 
-    def error(self):
-        return False
+    def stop(self):
+        return self.stop_flag
