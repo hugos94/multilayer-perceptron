@@ -88,7 +88,7 @@ class Application(tk.Frame):
         tk.Button(self, text='Arquivo de Teste', command=self.open_file_test).grid(column = 6, row = 0)
 
         # Cria o botao para testar o MLP
-        tk.Button(self, text='Testar Rede', command=self.test_mlp).grid(column = 7, row = 0)
+        tk.Button(self, text='Testar Rede', command=self.verify_teste_mlp).grid(column = 7, row = 0)
 
          # Inicializa a combobox como nulo
         self.box = None
@@ -143,7 +143,7 @@ class Application(tk.Frame):
             # Le os dados de entrada a partir de um arquivo csv
             self.file_content_testing = fm.read_csv(filename)
             # Cria a label com o nome do arquivo carregado
-            tk.Label(self, text=name).grid(column=7,row=1)
+            tk.Label(self, text=name).grid(column=6,row=1)
 
             self.test_flag = 0
 
@@ -317,7 +317,7 @@ class Application(tk.Frame):
         tk.Label(self, text="Rede Treinada!").grid(column=4,row=1)
 
 
-    def test_mlp(self):
+    def verify_teste_mlp(self):
         """ Funcao que testa o algoritmo do Multilayer Perceptron. """
         try:
             if(self.execute_flag == 1):
@@ -326,9 +326,7 @@ class Application(tk.Frame):
                         try:
                             if (self.test_flag == 0):
                                 self.test_flag = 1
-                                self.window_test = tk.Toplevel(self)
-                                self.window_test.title("Teste do Multilayer Perceptron!")
-                                self.window_test.grid
+                                self.test_mlp()
                             else:
                                 tk.messagebox.showwarning("Arquivo de teste ja utilizado!", "Informe o arquivo de teste novamente para continuar!")
                         except AttributeError:
@@ -340,6 +338,30 @@ class Application(tk.Frame):
         except AttributeError:
             tk.messagebox.showwarning("A rede Neural nao foi treinada!", "Treine a Rede Neural para continuar.")
 
+    def test_mlp(self):
+        # Remove a lista de atributos do arquivo
+        attributes = Matrix.extract_attributes(self.file_content_testing)
+
+        # Devolve colunas com as entradas
+        self.inputs_test = Matrix.remove_columns_2(self.file_content_testing, [4,5,6])
+
+        # Devolve colunas com as saidas esperadas
+        self.outputs_test = Matrix.remove_columns_2(self.file_content_testing, [0,1,2,3])
+
+        # Converte elementos das matrizes em float
+        self.inputs_test = Matrix.to_float(self.inputs_test)
+        self.outputs_test = Matrix.to_float(self.outputs_test)
+
+        # Imprime matriz a ser utilizada
+        print("Matriz de teste: ", end='')
+        Matrix.print_matrix(self.inputs_test)
+
+        self.window_test = tk.Toplevel(self)
+        self.window_test.title("Teste do Multilayer Perceptron!")
+        self.window_test.grid
+
+
+        self.mlp.testing(inputs_test, self.outputs_test, self.window_test)
 
 if __name__ == '__main__':
     root = tk.Tk()
