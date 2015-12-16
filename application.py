@@ -9,6 +9,7 @@ from tkinter import messagebox
 
 from file_manager import *
 import copy
+import csv
 from mlp import *
 from matrix import *
 
@@ -285,6 +286,7 @@ class Application(tk.Frame):
             self.epoch = int(self.epoch.get())
             self.epoch_counter = 0
             self.execute_flag = 0
+
         else:
             # Mensagem de erro gerada quando tentamos executar o algoritmo sem escolher o atributo classe
             tk.messagebox.showwarning("Quantidade de elementos de treinamento nao escolhido", "Escolha a quantidade para continuar!")
@@ -296,10 +298,24 @@ class Application(tk.Frame):
             self.label_epoch.set(" Epoca: " + str(self.epoch_counter) + "  Restantes: " + str(self.epoch-self.epoch_counter))
             self.mlp.trainning(float(self.learning_tax.get()), self.inputs, self.outputs, 0, 0)
         else:
+            # Finaliza execucao
             self.execute_flag = 1
             self.button_epoch.config(state=tk.DISABLED)
             self.button_all.config(state=tk.DISABLED)
             tk.Label(self, text="Rede Treinada!").grid(column=4,row=1)
+
+            # Tempo de execucao de todo o treinamento
+            print("Tempo de execucao =", self.mlp.time, "segundos")
+            # A rotina de escrita recebe um objeto do tipo file
+            out_csv = open('Output.csv', 'w')
+            for i, value in enumerate(self.mlp.data_csv):
+                # Escrevendo as tuplas no arquivo
+                if i % 2 == 0:
+                    out_csv.write(str(value) + ',')
+                else:
+                    out_csv.write(str(value) + '\n')
+
+            out_csv.close()
 
 
     def trainning_all_epoch(self):
@@ -310,10 +326,25 @@ class Application(tk.Frame):
             if(self.epoch_counter == self.epoch):
                 flag = 1
             self.mlp.trainning(float(self.learning_tax.get()), self.inputs, self.outputs, 1, flag)
+
+        # Finaliza execucao
         self.execute_flag = 1
         self.button_epoch.config(state=tk.DISABLED)
         self.button_all.config(state=tk.DISABLED)
         tk.Label(self, text="Rede Treinada!").grid(column=4,row=1)
+
+        # Tempo de execucao de todo o treinamento
+        print("Tempo de execucao =", self.mlp.time, "segundos")
+        # A rotina de escrita recebe um objeto do tipo file
+        out_csv = open('Output.csv', 'w')
+        for i, value in enumerate(self.mlp.data_csv):
+            # Escrevendo as tuplas no arquivo
+            if i % 2 == 0:
+                out_csv.write(str(value) + ',')
+            else:
+                out_csv.write(str(value) + '\n')
+
+        out_csv.close()
 
 
     def verify_teste_mlp(self):

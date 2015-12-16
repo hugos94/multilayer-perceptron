@@ -28,6 +28,12 @@ class MLP(object):
         self.mean_error = 0.0       # Erro quadratico medio
         self.precision = precision  # Taxa de erro aceitavel
 
+        # Dados que serao salvos no CSV de saida
+        self.data_csv = ('Epoca', 'Erro medio quadratico')
+        # Valor da epocas a serem salvas no arquivo
+        self.epoch = 1
+
+        self.time = 0               # Tempo de execucao do treinamento
         self.stop_flag = False      # Flag que informa se o erro ja e aceitavel
 
         self.neurons_in = []        # Neuronios da camada escondida
@@ -111,6 +117,9 @@ class MLP(object):
     def trainning(self, learning_tax, inputs, outputs, by_epoch, flag):
         ''' Metodo que treina a rede neural de multiplas camadas. '''
 
+        # Retorna o tempo inicial do treinamento dessa epoca
+        start_time = time.time()
+
         # Atualiza erro anterior e zera erro medio
         previous_error = self.mean_error
         self.mean_error = 0.0
@@ -142,11 +151,20 @@ class MLP(object):
         self.mean_error = self.mean_error / tam_inputs
         current_error = self.mean_error
 
+        # Concatenacao dos dados a serem salvos
+        self.data_csv += (self.epoch, self.mean_error)
+        # Incremento do valor da epoca
+        self.epoch += 1
+
         if math.fabs(current_error - previous_error) <= self.precision:
             self.stop_flag = True
 
+        # Calcula o tempo de execucao do treinamento dessa epoca e somo ao tempo total
+        self.time += time.time() - start_time
+
         if (by_epoch == 0 or flag == 1 or self.stop_flag == True):
             self.create_graph(self.window, inputs[i])
+
 
     def create_graph(self, window, inputs):
         '''Criacao do grafo do MLP'''
