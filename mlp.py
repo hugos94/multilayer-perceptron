@@ -222,17 +222,18 @@ class MLP(object):
         in_error = []
 
         # Calculando o erro da camada de saida
-        for i in range(len(self.neurons_out)):
-            out_error.append(math.pow((outputs[i] - self.neurons_out[i].output), 2.0)/2.0)
+        for i, out in enumerate(self.neurons_out):
+            out_error.append((outputs[i] - out.output) * out.calculate_derived_sigmoid())
+            #out_error.append(math.pow((outputs[i] - self.neurons_out[i].output), 2.0)/2.0)
 
         # Calculando o erro da camada escondida
-        for i in range(len(self.neurons_in)):
+        for i, inp in enumerate(self.neurons_in):
             error = 0
 
             for j in range(len(self.neurons_out)):
                 error += out_error[j] * self.neurons_out[j].weight[i]
 
-            in_error.append(error)
+            in_error.append(error * inp.calculate_derived_sigmoid())
 
         # Calculando os novos pesos e o novo limiar de ativacao da camada escondida
         for i,inp in enumerate(self.neurons_in):

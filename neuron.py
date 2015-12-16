@@ -37,13 +37,16 @@ class Neuron(object):
     def calculate_derived_sigmoid(self):
         """ Calcula a derivada da funcao sigmoide """
 
-        beta = 1.0
-        potencial = self.sum_inputs() - self.theta
+        x = self.calculate_sigmoid()
+        out = x * (1 - x)
 
-        e =  2.718281828459045235360287     # Euler value
-        e_bu = math.pow(e, (beta * potencial))  # e^bu
-
-        out = (beta * e_bu) / math.pow((e_bu + 1), 2)
+        # beta = 1.0
+        # potencial = self.sum_inputs() - self.theta
+        #
+        # e =  2.718281828459045235360287     # Euler value
+        # e_bu = math.pow(e, (beta * potencial))  # e^bu
+        #
+        # out = (beta * e_bu) / math.pow((e_bu + 1), 2)
 
         return out
 
