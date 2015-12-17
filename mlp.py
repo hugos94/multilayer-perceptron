@@ -100,7 +100,7 @@ class MLP(object):
         current_error = self.mean_error
 
         # Concatenacao dos dados a serem salvos
-        self.data_csv += (self.epoch, self.mean_error)
+        self.data_csv += (self.epoch, current_error - previous_error)
         # Incremento do valor da epoca
         self.epoch += 1
 
@@ -173,7 +173,7 @@ class MLP(object):
 
     def testing(self, window_test, inputs, outputs):
         ''' Metodo que testa a rede neural. '''
-        
+
         inputs_out = []
 
         for inp in self.neurons_in:
