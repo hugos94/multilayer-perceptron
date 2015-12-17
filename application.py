@@ -401,7 +401,7 @@ class Application(tk.Frame):
 
 
     def execute_test_mlp(self):
-        if(self.counter_test < len(self.inputs_test)-1):
+        if(self.counter_test < len(self.inputs_test)):
             self.mlp.testing(self.window_test, self.inputs_test[self.counter_test], self.outputs_test[self.counter_test])
             self.counter_test+=1
             self.label_input_test.set(" Entrada: "+ str(self.counter_test) + "  Restantes: " + str(len(self.inputs_test)-self.counter_test))
