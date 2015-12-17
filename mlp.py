@@ -111,10 +111,10 @@ class MLP(object):
         self.time += time.time() - start_time
 
         if (by_epoch == 0 or flag == 1 or self.stop_flag == True):
-            self.create_graph(self.window, inputs[i])
+            self.create_graph(self.window, inputs[i], outputs[i])
 
 
-    def create_graph(self, window, inputs):
+    def create_graph(self, window, inputs, outputs=[0, 0, 0]):
         '''Criacao do grafo do MLP'''
 
         self.dot = Digraph(format='png')
@@ -152,7 +152,7 @@ class MLP(object):
         # Cria a label que será mostrada no nó de saida
         label_out=""
         for k in range(self.architecture[2]):
-            label_out += "Saida:" + str(k) + "\tValue:" + str(round(self.neurons_out[k].output,3)) + "\n"
+            label_out += "Saida:" + str(k) + "  Value:" + str(round(self.neurons_out[k].output,3)) + "  Esperado: " + str(outputs[k]) + "\n"
             self.dot.edge("out_layer"+(str(k+1)), "out", label="")
 
         # Cria o no de saida n grafo
@@ -171,30 +171,27 @@ class MLP(object):
         '''Fim da criacao do grafo'''
 
 
-    def testing(self, inputs, outputs, window_test):
-        for i in range(len(inputs)):
-            inputs_out = []
+    def testing(self, window_test, inputs, outputs):
+        inputs_out = []
 
-            for inp in self.neurons_in:
-                # Modifica os valores de entrada para os neuronios da camada escondida
-                inp.input = copy.deepcopy(inputs[i])
+        for inp in self.neurons_in:
+            # Modifica os valores de entrada para os neuronios da camada escondida
+            inp.input = copy.deepcopy(inputs)
 
-                # Recalcula a saida do neuronio com as novas entradas
-                inp.recalculate_output()
+            # Recalcula a saida do neuronio com as novas entradas
+            inp.recalculate_output()
 
-                # Valores de entrada para os neuronios da camada de saida
-                inputs_out.append(inp.output)
+            # Valores de entrada para os neuronios da camada de saida
+            inputs_out.append(inp.output)
 
-            for oup in self.neurons_out:
-                # Modifica os valores de entrada para os neuronios da camada de saida
-                oup.input = copy.deepcopy(inputs_out)
+        for oup in self.neurons_out:
+            # Modifica os valores de entrada para os neuronios da camada de saida
+            oup.input = copy.deepcopy(inputs_out)
 
-                # Recalcula a saida do neuronio com as novas entradas
-                oup.recalculate_output()
+            # Recalcula a saida do neuronio com as novas entradas
+            oup.recalculate_output()
 
-                print(oup.output)
-
-            print(outputs[i])
+        self.create_graph(window_test, inputs, outputs)
 
 
     def update_weights(self, outputs, n):

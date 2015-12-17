@@ -386,55 +386,29 @@ class Application(tk.Frame):
         print("Matriz de teste: ", end='')
         Matrix.print_matrix(self.inputs_test)
 
+        self.counter_test = 0
+
         self.window_test = tk.Toplevel(self)
         self.window_test.title("Teste do Multilayer Perceptron!")
         self.window_test.grid
 
-        self.mlp.testing(self.inputs_test, self.outputs_test, self.window_test)
+        self.label_input_test = StringVar()
+        self.label_input_test.set(" Entrada: "+ str(self.counter_test) + "  Restantes: " + str(len(self.inputs_test)))
+        tk.Label(self.window_test,textvariable=self.label_input_test).grid(column=0,row=0)
+        self.button_execute_test = tk.Button(self.window_test, text="Executar uma entrada?", command=self.execute_test_mlp)
+        self.button_execute_test.grid(column=0,row=1)
+        self.mlp.create_graph(self.window_test, [0] * 4)
+
+
+    def execute_test_mlp(self):
+        if(self.counter_test < len(self.inputs_test)-1):
+            self.mlp.testing(self.window_test, self.inputs_test[self.counter_test], self.outputs_test[self.counter_test])
+            self.counter_test+=1
+            self.label_input_test.set(" Entrada: "+ str(self.counter_test) + "  Restantes: " + str(len(self.inputs_test)-self.counter_test))
+        else:
+            self.button_execute_test.config(state=tk.DISABLED)
 
 if __name__ == '__main__':
     root = tk.Tk()
     app = Application(master=root)
     app.mainloop()
-
-'''
-# Metodos que adicionam a funcionalidade de escolher a arquitetura dinamicamente
-
-# def set_architecture(self):
-#     """ Cria uma nova janela pra inserir a arquitetura do MLP. """
-#
-#     self.window = tk.Toplevel(self)
-#     self.window.title("Arquitetura do MLP!")
-#     self.window.grid
-#
-#     tk.Label(self.window, text="Informe a quantidade de entradas:").grid(column=0,row=0)
-#     self.in_layer = StringVar()
-#     tk.Entry(self.window,width=20, textvariable=self.in_layer).grid(column=1,row=0)
-#
-#     tk.Label(self.window, text="Informe a quantidade de neuronios na camada escondida:").grid(column=0,row=1)
-#     self.hidden_layer = StringVar()
-#     tk.Entry(self.window,width=20, textvariable=self.hidden_layer).grid(column=1,row=1)
-#
-#     tk.Label(self.window, text="Informe a quantidade de neuronios na camada de saida:").grid(column=0,row=2)
-#     self.out_layer = StringVar()
-#     tk.Entry(self.window,width=20, textvariable=self.out_layer).grid(column=1,row=2)
-#
-#     tk.Button(self.window,text="Salvar!", command=self.verify_architecture).grid(column=2,row=1)
-
-# def verify_architecture(self):
-#     """ Metodo que verifica se a arquitetura foi inserida """
-#
-#     if self.in_layer.get():
-#         if self.hidden_layer.get():
-#             if self.out_layer.get():
-#                 self.architecture_type = self.in_layer.get() + "-" + self.hidden_layer.get() + "-" + self.out_layer.get()
-#                 tk.Label(self,text=self.architecture_type).grid(column=3,row=1)
-#                 self.window.destroy()
-#             else:
-#                 tk.messagebox.showwarning("Numero de neuronios na camada de saida nao informado", "Informe o numero de neuronios na camada de saida para continuar!")
-#         else:
-#             tk.messagebox.showwarning("Numero de neuronios na camada escondida nao informado", "Informe o numero de neuronios na camada escondida para continuar!")
-#     else:
-#         tk.messagebox.showwarning("Numero de entradas nao informado", "Informe o numero de entradas para continuar!")
-#
-'''
