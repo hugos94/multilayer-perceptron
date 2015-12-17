@@ -428,6 +428,7 @@ class Application(tk.Frame):
 
     def execute_test_mlp(self):
         ''' Metodo que executa os testes no MLP '''
+
         if(self.counter_test < len(self.inputs_test)):
             self.mlp.testing(self.window_test, self.inputs_test[self.counter_test], self.outputs_test[self.counter_test])
             self.counter_test+=1
