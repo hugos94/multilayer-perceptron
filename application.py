@@ -350,12 +350,13 @@ class Application(tk.Frame):
         flag = 0
         while (not self.mlp.stop_trainning() and self.epoch_counter < self.epoch):
             self.epoch_counter += 1
-            self.label_epoch.set(" Epoca: " + str(self.epoch_counter) + "  Restantes: " + str(self.epoch-self.epoch_counter))
             if(self.epoch_counter == self.epoch):
                 flag = 1
             self.mlp.trainning(float(self.learning_tax.get()), self.inputs, self.outputs, 1, flag)
 
+
         # Finaliza execucao
+        self.label_epoch.set(" Epoca: " + str(self.epoch_counter) + "  Restantes: " + str(self.epoch-self.epoch_counter))
         self.execute_flag = 1
         self.button_epoch.config(state=tk.DISABLED)
         self.button_all.config(state=tk.DISABLED)
