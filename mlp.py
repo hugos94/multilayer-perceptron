@@ -93,7 +93,7 @@ class MLP(object):
                 # Recalcula a saida do neuronio com as novas entradas
                 oup.recalculate_output()
 
-        self.update_weights(outputs[i], learning_tax)
+            self.update_weights(outputs[i], learning_tax)
 
         # Atualiza erro atual e zera erro medio
         self.mean_error = self.mean_error / tam_inputs
@@ -192,7 +192,6 @@ class MLP(object):
             oup.recalculate_output()
 
         self.create_graph(window_test, inputs, outputs)
-
 
     def update_weights(self, outputs, n):
         ''' Metodo que atualiza os pesos da rede neural de multiplas camadas. '''
