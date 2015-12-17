@@ -172,6 +172,8 @@ class MLP(object):
 
 
     def testing(self, window_test, inputs, outputs):
+        ''' Metodo que testa a rede neural. '''
+        
         inputs_out = []
 
         for inp in self.neurons_in:
@@ -195,6 +197,7 @@ class MLP(object):
 
     def update_weights(self, outputs, n):
         ''' Metodo que atualiza os pesos da rede neural de multiplas camadas. '''
+
         out_error = []
         in_error = []
 
@@ -233,4 +236,5 @@ class MLP(object):
 
 
     def stop_trainning(self):
+        ''' Metodo que para o treinamento. '''
         return self.stop_flag
