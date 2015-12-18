@@ -100,7 +100,7 @@ class MLP(object):
         current_error = self.mean_error
 
         # Concatenacao dos dados a serem salvos
-        self.data_csv += (self.epoch, current_error - previous_error)
+        self.data_csv += (self.epoch, math.fabs(current_error - previous_error))
         # Incremento do valor da epoca
         self.epoch += 1
 
